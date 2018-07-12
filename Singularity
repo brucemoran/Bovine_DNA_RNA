@@ -12,17 +12,21 @@ From:centos:centos7.4.1708
 
 %post  
     #essential utilities
-     yum -y install git wget bzip2 unzip
+     yum -y install git wget bzip2 unzip which
 # 
-#     #language and libraries
-     yum -y install java-1.8.0-openjdk-devel gcc gcc-c++ glibc-devel make ncurses-devel zlib-devel libbzip2-devel bzip2-devel xz-devel
+#    #language and libraries
+     yum -y install java-1.8.0-openjdk-devel gcc gcc-c++ glibc-devel make ncurses-devel zlib-devel libbzip2-devel bzip2-devel xz-devel perl-DBI lapack-devel atlas-devel
+     #libclas and libatlas aren't put in the right places
+     ln -s /usr/lib64/atlas/libtatlas.so /usr/lib64/libatlas.so
+     ln -s /usr/lib64/atlas/libsatlas.so /usr/lib64/libcblas.so
+
 #     #yum -y install https://centos7.iuscommunity.org/ius-release.rpm
 #     yum -y install python36u python36u-pip python36u-devel
 # 
 
      mkdir -p /usr/local/src
      cd /usr/local/src
-
+     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 #     #samtools
 #     wget https://github.com/samtools/samtools/releases/download/1.8/samtools-1.8.tar.bz2
@@ -125,13 +129,45 @@ From:centos:centos7.4.1708
 #     #don't think we need anything from the scripts subdir
 #     
     #SnpEff
-    wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
-    unzip snpEff_latest_core.zip
+#    wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
+#    unzip snpEff_latest_core.zip
     #doesn't really make sense to put this elsewhere in /usr/local, so just leaving it in /usr/local/src
     
-    
+    #ensembl vep
+    #note built without mysql support, error message:
+    #WARNING: DBD::mysql module not found. VEP can only run in offline (--offline) mode without DBD::mysql installed
 
+#     yum install -y perl-CPAN perl-IO-Socket-SSL perl-Archive-Any perl-YAML perl-CPAN-Meta perl-Digest-MD5
+#     cpan install Bio::DB::HTS
+#     
+#     #the Vep installer needs ensembl which needs bioperl, ensembl didn't have a cpan or rpm package, installing like its 1990!
+#     cd /usr/local/lib
+#     wget ftp://ftp.ensembl.org/pub/ensembl-api.tar.gz
+#     wget https://cpan.metacpan.org/authors/id/C/CJ/CJFIELDS/BioPerl-1.6.924.tar.gz 
+#     tar xvf ensembl-api.tar.gz
+#     tar xvf BioPerl-1.6.924.tar.gz 
+#     export PERL5LIB=${PERL5LIB}:/usr/local/lib/ensembl/modules
+#     cd /usr/local/src
+#    
+#     wget https://github.com/Ensembl/ensembl-vep/archive/release/92.5.tar.gz
+#     tar xvf 92.5.tar.gz
+#     cd ensembl-vep-release-92.5
+
+      #we only have US locales installed and complaints happen if host system locale is something different 
+#     export LANG=en_US.UTF-8
+#     
+#     perl ./INSTALL.pl 
+#     cd ..
     
+    
+    #plink-ng
+    wget https://github.com/chrchang/plink-ng/archive/b0cec5e.tar.gz
+    tar xvf b0cec5e.tar.gz
+    cd plink-ng-b0cec5e/2.0/build_dynamic
+    make
+    mv plink2 /usr/local/bin
+    mv pgen_compress /usr/local/bin
+    cd ..
     
     
 %runscript
