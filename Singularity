@@ -82,15 +82,14 @@ From:centos:centos7.4.1708
     #but the bioperl we just downloaded is missing the DB:HTS module, so use cpan to install it
     #this prompts us to install a load of extra bits of bioperl, tell it not to
     yes n | cpan install Bio::DB::HTS
+    
+    cpan Module::Build
 
     cd /usr/local/src
    
     wget https://github.com/Ensembl/ensembl-vep/archive/release/92.5.tar.gz
     tar xvf 92.5.tar.gz
-    cd ensembl-vep-release-92.5
-
-
-    
+    cd ensembl-vep-release-92.5   
     perl ./INSTALL.pl 
     echo "finished installing vep"
     cd ..    
