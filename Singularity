@@ -99,6 +99,8 @@ From:centos:centos7.4.1708
     echo "y" >> commands #agree to install cache files 
     echo "10" >> commands #choose bos_taurus_merged_vep_92_UMD3.1.tar.gz
     echo "y" >> commands #overrite cached files, is this needed?
+    echo "n" >> commands #don't install FASTA files
+    echo "n" >> commands #don't install plugins
     
     perl ./INSTALL.pl < commands #this has several prompts which need to worked out, which datasets do we want from it?
     echo "finished installing vep"
