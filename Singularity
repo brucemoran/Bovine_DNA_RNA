@@ -79,6 +79,10 @@ From:centos:centos7.4.1708
       
     export PERL5LIB=${PERL5LIB}:/usr/local/lib/ensembl/modules:/usr/local/lib/ensembl-io/modules:/usr/local/lib/ensembl-variation/modules:/usr/local/lib/ensembl-funcgen/modules
     
+    exit
+    
+    cpan install local::lib
+    
     #but the bioperl we just downloaded is missing the DB:HTS module, so use cpan to install it
     #this prompts us to install a load of extra bits of bioperl, tell it not to
     yes n | cpan install Bio::DB::HTS
@@ -90,9 +94,16 @@ From:centos:centos7.4.1708
     wget https://github.com/Ensembl/ensembl-vep/archive/release/92.5.tar.gz
     tar xvf 92.5.tar.gz
     cd ensembl-vep-release-92.5   
-    perl ./INSTALL.pl 
+
+    echo "y" > commands
+    echo "y" >> commands #agree to install cache files 
+    echo "10" >> commands #choose bos_taurus_merged_vep_92_UMD3.1.tar.gz
+    echo "y" >> commands #overrite cached files, is this needed?
+    
+    perl ./INSTALL.pl < commands #this has several prompts which need to worked out, which datasets do we want from it?
     echo "finished installing vep"
     cd ..    
+
     
 
 
