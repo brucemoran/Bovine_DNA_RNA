@@ -35,7 +35,7 @@ From:centos:centos7.4.1708
     # note built without mysql support, error message:
     # WARNING: DBD::mysql module not found. VEP can only run in offline (--offline) mode without DBD::mysql installed
     # 
-    yum install -y perl-CPAN perl-IO-Socket-SSL perl-Archive-Any perl-YAML perl-CPAN-Meta perl-Digest-MD5
+    yum install -y perl-CPAN perl-IO-Socket-SSL perl-Archive-Any perl-YAML perl-CPAN-Meta perl-Digest-MD5 perl-App-cpanminus perl-local-lib
 
     #we only have US locales installed and complaints happen if host system locale is something different 
     export LANG=en_US.UTF-8
@@ -79,15 +79,15 @@ From:centos:centos7.4.1708
       
     export PERL5LIB=${PERL5LIB}:/usr/local/lib/ensembl/modules:/usr/local/lib/ensembl-io/modules:/usr/local/lib/ensembl-variation/modules:/usr/local/lib/ensembl-funcgen/modules
     
-    exit
-    
-    cpan install local::lib
-    
+        
     #but the bioperl we just downloaded is missing the DB:HTS module, so use cpan to install it
     #this prompts us to install a load of extra bits of bioperl, tell it not to
-    yes n | cpan install Bio::DB::HTS
+    #yes n | cpan install Bio::DB::HTS
+    cpanm install --force Bio::DB::HTS #version mismatch in the tests requires forcing, actual program ok
     
-    cpan Module::Build
+
+    
+    #cpan Module::Build
 
     cd /usr/local/src
    
@@ -205,7 +205,7 @@ From:centos:centos7.4.1708
     cd /data
     
     #only needed to speed things up in aber
-    export http_proxy="http://wwwcache.aber.ac.uk:8080"
+    #export http_proxy="http://wwwcache.aber.ac.uk:8080"
     
     #1000 Bulls
     wget http://www.1000bullgenomes.com/doco/1000bulls_v6_annotated_snps.tab.gz
