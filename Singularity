@@ -67,10 +67,10 @@ From:centos:centos7.4.1708
     wget https://github.com/enasequence/cramtools/archive/v3.0.tar.gz
     tar xf v3.0.tar.gz
     cd cramtools-3.0/
-    sudo chmod a+x cramtools-3.0.jar
+    chmod a+x cramtools-3.0.jar
     mv cramtools-3.0.jar /usr/local/bin
     echo -e "#! /bin/bash\nexec java -jar /data/genome/reference/hg19/refGene/cramtools-3.0/cramtools-3.0.jar "$@"" > /usr/local/bin/cramtools
-    sudo chmod a+x /usr/local/bin/cramtools
+    chmod a+x /usr/local/bin/cramtools
 
     #ensembl vep
     #the Vep installer needs ensembl which needs bioperl, ensembl didn't have a cpan or rpm package, installing like its 1990!
