@@ -243,13 +243,13 @@ From:centos:centos7.4.1708
     wget ftp://ftp.ensembl.org/pub/release-92/variation/vcf/bos_taurus/bos_taurus_incl_consequences.vcf.gz
 
     #run NextFlow reference script
-    /usr/local/bin/nextflow run umd3.1.create_ref_indexes.nf \
+    /usr/local/bin/nextflow run umd3.1.create_ref_indexes.simg.nf \
       --dataDir /data \
       --fa Bos_taurus.UMD3.1.dna.toplevel.fa.gz \
       --gtf Bos_taurus.UMD3.1.92.gtf.gz \
       --vcf bos_taurus_incl_consequences.vcf.gz \
       --bed 130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz \
-      -c "bovine_DNA_RNA.nextflow.config" \
+      -c "bovine_DNA_RNA.nextflow.simg.config" \
       -with-report "ref.report.html" \
       -with-timeline "ref.timeline.html"
 
