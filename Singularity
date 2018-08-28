@@ -207,15 +207,12 @@ From:centos:centos7.4.1708
     curl -s https://get.nextflow.io | bash
     mv nextflow /usr/local/bin/
 
-    #NextFlow reference indexing/manipulation script
-    wget https://raw.githubusercontent.com/brucemoran/Bovine_DNA_RNA/master/umd3.1.create_ref_indexes.simg.nf
-    mv umd3.1.create_ref_indexes.simg.nf /usr/local/bin/
-
     #for required data files
     mkdir /data
     cd /data
 
-    #NextFlow config
+    #NextFlow reference indexing/manipulation script, config
+    wget https://raw.githubusercontent.com/brucemoran/Bovine_DNA_RNA/master/umd3.1.create_ref_indexes.simg.nf
     wget https://raw.githubusercontent.com/brucemoran/Bovine_DNA_RNA/master/bovine_DNA_RNA.nextflow.simg.config
 
     #only needed to speed things up in aber
@@ -246,7 +243,7 @@ From:centos:centos7.4.1708
     wget ftp://ftp.ensembl.org/pub/release-92/variation/vcf/bos_taurus/bos_taurus_incl_consequences.vcf.gz
 
     #run NextFlow reference script
-    /usr/local/bin/nextflow run /usr/local/bin/umd3.1.create_ref_indexes.nf \
+    /usr/local/bin/nextflow run umd3.1.create_ref_indexes.nf \
       --dataDir /data \
       --fa Bos_taurus.UMD3.1.dna.toplevel.fa.gz \
       --gtf Bos_taurus.UMD3.1.92.gtf.gz \

@@ -13,7 +13,7 @@ if (params.help) {
   log.info '---------------------------------'
   log.info ''
   log.info 'Usage: '
-  log.info 'nextflow run umd3.1.create_ref_indexes.nf \
+  log.info 'nextflow run umd3.1.create_ref_indexes.simg.nf \
             --dataDir data \
             --fa Bos_taurus.UMD3.1.dna.toplevel.fa.gz \
             --gtf Bos_taurus.UMD3.1.92.gtf.gz \
