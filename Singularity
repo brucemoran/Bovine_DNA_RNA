@@ -242,6 +242,9 @@ From:centos:centos7.4.1708
     #variants
     wget ftp://ftp.ensembl.org/pub/release-92/variation/vcf/bos_taurus/bos_taurus_incl_consequences.vcf.gz
 
+    #exome
+    wget https://raw.githubusercontent.com/brucemoran/Bovine_DNA_RNA/master/130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz
+
     #run NextFlow reference script
     /usr/local/bin/nextflow run umd3.1.create_ref_indexes.simg.nf \
       --dataDir /data \
