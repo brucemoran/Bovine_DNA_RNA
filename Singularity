@@ -220,32 +220,21 @@ From:centos:centos7.4.1708
     #only needed to speed things up in aber
     #export http_proxy="http://wwwcache.aber.ac.uk:8080"
 
-    #1000 Bulls (not required, leaving for legacy)
-    #wget http://www.1000bullgenomes.com/doco/1000bulls_v6_annotated_snps.tab.gz
-    #wget http://www.1000bullgenomes.com/doco/1000bulls_v6_annotated_indels.tab.gz
-
     #DNA genome fasta (toplevel no masking)
     wget ftp://ftp.ensembl.org/pub/release-92/fasta/bos_taurus/dna/Bos_taurus.UMD3.1.dna.toplevel.fa.gz
-
-    #cDNA genome fasta
-    wget ftp://ftp.ensembl.org/pub/release-92/fasta/bos_taurus/cdna/Bos_taurus.UMD3.1.cdna.all.fa.gz
-
-    #CDS fasta
-    wget ftp://ftp.ensembl.org/pub/release-92/fasta/bos_taurus/cds/Bos_taurus.UMD3.1.cds.all.fa.gz
-
-    #ncRNA fasta
-    wget ftp://ftp.ensembl.org/pub/release-92/fasta/bos_taurus/ncrna/Bos_taurus.UMD3.1.ncrna.fa.gz
+    gunzip Bos_taurus.UMD3.1.dna.toplevel.fa.gz
 
     #GTF
-    wget ftp://ftp.ensembl.org/pub/release-92/gtf/bos_taurus/Bos_taurus.UMD3.1.92.abinitio.gtf.gz
-    wget ftp://ftp.ensembl.org/pub/release-92/gtf/bos_taurus/Bos_taurus.UMD3.1.92.chr.gtf.gz
     wget ftp://ftp.ensembl.org/pub/release-92/gtf/bos_taurus/Bos_taurus.UMD3.1.92.gtf.gz
+    gunzip Bos_taurus.UMD3.1.92.gtf.gz
 
     #variants
     wget ftp://ftp.ensembl.org/pub/release-92/variation/vcf/bos_taurus/bos_taurus_incl_consequences.vcf.gz
+    gunzip bos_taurus_incl_consequences.vcf.gz
 
     #exome
     wget https://raw.githubusercontent.com/brucemoran/Bovine_DNA_RNA/master/130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz
+    gunzip 130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz
 
 %runscript
     #set locale so multiqc doesn't complain
