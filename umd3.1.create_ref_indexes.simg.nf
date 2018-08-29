@@ -55,10 +55,10 @@ process sortfa {
   BED=\$(echo $bedgz | sed 's/.gz\$//')
   unpigz -f $bedgz | sort -Vk1,1 -k2,2n | uniq | perl -ane 'if(scalar(@F) == 3){print \$_;}' > \$BED
 
-  GTF=\$(echo $gtfgz | sed 's/\.gz\$//')
+  GTF=\$(echo $gtfgz | sed 's/.gz\$//')
   unpigz -f $gtfgz > \$GTF
 
-  FA=\$(echo $fagz | sed 's/\.gz\$//')
+  FA=\$(echo $fagz | sed 's/.gz\$//')
   unpigz -f $fagz > \$FA
 
   samtools faidx \$FA
