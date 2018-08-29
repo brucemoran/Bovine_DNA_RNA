@@ -32,44 +32,37 @@ if (params.help) {
 * sorts fasta on chrnames, then reorders
 */
 FA = Channel.fromPath("$params.dataDir/$params.fa", type: "file")
-GTF = Channel.fromPath("$params.dataDir/$params.gtf", type: "file")
 BED = Channel.fromPath("$params.dataDir/$params.bed", type: "file")
+Channel.fromPath("$params.dataDir/$params.gtf", type: "file").into{ refflat_gtf, star_gtf, rrna_gtf }
 
 process sortfa {
 
   publishDir "$params.dataDir/", mode: "copy", pattern: "*"
 
   input:
-  file(fagz) from FA
-  file(gtfgz) from GTF
-  file(bedgz) from BED
+  file(fa) from FA
+  file(bed) from BED
 
   output:
   set file('*.sort.fa'), file('*.sort.fa.fai') into (bwa_fasta, star_fasta)
-  file('*.gtf') into (star_gtf, refflat_gtf, rrna_gtf)
-  file('*.bed') into exome_bed
+  file('*.gtf') into (star_gtf, refflat_gtf, )
+  file('*.sort.bed') into exome_bed
   file('*.dict') into (fasta_dict, rrna_dict)
 
   script:
   """
-  BED=\$(echo $bedgz | sed 's/.gz\$//')
-  unpigz -f $bedgz | sort -Vk1,1 -k2,2n | uniq | perl -ane 'if(scalar(@F) == 3){print \$_;}' > \$BED
+  SORTBED=\$(echo $bed | sed 's/.bed\$/sort.bed/')
+  cat $bed | sort -Vk1,1 -k2,2n | uniq | perl -ane 'if(scalar(@F) == 3){print \$_;}' > \$SORTBED
 
-  GTF=\$(echo $gtfgz | sed 's/.gz\$//')
-  unpigz -f $gtfgz > \$GTF
-
-  FA=\$(echo $fagz | sed 's/.gz\$//')
-  unpigz -f $fagz > \$FA
-
-  samtools faidx \$FA
-  SORTFA=\$(echo \$FA | sed 's/.fa/.sort.fa/')
-  grep ">" \$FA | sort -V > sort.chrs
+  samtools faidx $fa
+  SORTFA=\$(echo $fa | sed 's/.fa/.sort.fa/')
+  grep ">" $fa | sort -V > sort.chrs
 
   perl -ane 'chomp; @s=split(/:/);print "\$s[3]:\$s[4]-\$s[5]\\t\$_\\n";' sort.chrs | \
   while read LINE; do
     REG=\$(echo "\$LINE" | cut -f 1)
     NAM=\$(echo "\$LINE" | cut -f 2)
-    samtools faidx \$FA \$REG > tmp.fa
+    samtools faidx $fa \$REG > tmp.fa
     sed -i "1s/.*/\$NAM/" tmp.fa
     cat tmp.fa >> \$SORTFA
   done
