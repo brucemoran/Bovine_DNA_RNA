@@ -252,15 +252,15 @@ From:centos:centos7.4.1708
     #first set ulimit for allowing coredump of LevelDB kills
     #ulimit -c unlimited
 
-    /usr/local/bin/nextflow run umd3.1.create_ref_indexes.simg.nf \
+    /usr/local/bin/nextflow run /data/umd3.1.create_ref_indexes.simg.nf \
       --dataDir /data \
       --fa Bos_taurus.UMD3.1.dna.toplevel.fa.gz \
       --gtf Bos_taurus.UMD3.1.92.gtf.gz \
       --vcf bos_taurus_incl_consequences.vcf.gz \
       --bed 130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz \
-      -c "bovine_DNA_RNA.nextflow.simg.config" \
-      -with-report "ref.report.html" \
-      -with-timeline "ref.timeline.html"
+      -c "/data/bovine_DNA_RNA.nextflow.simg.config" \
+      -with-report "/data/ref.report.html" \
+      -with-timeline "/data/ref.timeline.html"
 
 %runscript
     #set locale so multiqc doesn't complain
