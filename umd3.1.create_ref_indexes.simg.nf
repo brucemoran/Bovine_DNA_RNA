@@ -1,4 +1,4 @@
-#!/usr/bin/env nextflow
+#!/usr/local/bin/nextflow
 
 /* indexes required for exome, RNAseq
 * BWA, STAR, exome interval list
@@ -14,7 +14,7 @@ if (params.help) {
   log.info ''
   log.info 'Usage: '
   log.info 'nextflow run umd3.1.create_ref_indexes.simg.nf \
-            --dataDir data \
+            --dataDir /data \
             --fa Bos_taurus.UMD3.1.dna.toplevel.fa.gz \
             --gtf Bos_taurus.UMD3.1.92.gtf.gz \
             --vcf bos_taurus_incl_consequences.vcf.gz \
@@ -53,12 +53,14 @@ process sortfa {
   script:
   """
   BED=\$(echo $bedgz | sed 's/.gz\$//')
-  unpigz -c $bedgz | sort -Vk1,1 -k2,2n | uniq | perl -ane 'if(scalar(@F) == 3){print \$_;}' > \$BED
+  unpigz -f $bedgz | sort -Vk1,1 -k2,2n | uniq | perl -ane 'if(scalar(@F) == 3){print \$_;}' > \$BED
 
-  unpigz -kf $fagz
-  unpigz -kf $gtfgz
+  GTF=\$(echo $gtfgz | sed 's/\.gz\$//')
+  unpigz -f $gtfgz > \$GTF
 
-  FA=\$(echo $fagz | sed 's/.gz\$//')
+  FA=\$(echo $fagz | sed 's/\.gz\$//')
+  unpigz -f $fagz > \$FA
+
   samtools faidx \$FA
   SORTFA=\$(echo \$FA | sed 's/.fa/.sort.fa/')
   grep ">" \$FA | sort -V > sort.chrs
@@ -78,7 +80,6 @@ process sortfa {
 }
 
 /* 1.1: Index BWA
-*
 */
 process bwaidx {
 
@@ -98,7 +99,6 @@ process bwaidx {
 complete1_1.subscribe { println "Completed BWA indexing" }
 
 /* 1.2: Index STAR
-*
 */
 process staridx {
 
@@ -124,7 +124,6 @@ process staridx {
 complete1_2.subscribe { println "Completed STAR indexing" }
 
 /* 1.3: BED intervalList
-*
 */
 process intlist {
 
@@ -147,7 +146,6 @@ process intlist {
 complete1_3.subscribe { println "Completed exome interval_list" }
 
 /* 1.4: refFlat for RNAseq
-*
 */
 process refFlat {
 
@@ -175,7 +173,6 @@ process refFlat {
 complete1_4.subscribe { println "Completed refFlat" }
 
 /* 1.5: rRNA for RNAseq
-*
 */
 process rRNA {
 
