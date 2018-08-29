@@ -247,7 +247,6 @@ From:centos:centos7.4.1708
     #exome
     wget https://raw.githubusercontent.com/brucemoran/Bovine_DNA_RNA/master/130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz
 
-%setup
     #run NextFlow reference script
     #first set ulimit for allowing coredump of LevelDB kills
     #ulimit -c unlimited
