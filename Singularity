@@ -236,6 +236,16 @@ From:centos:centos7.4.1708
     wget https://raw.githubusercontent.com/brucemoran/Bovine_DNA_RNA/master/130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz
     gunzip 130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz
 
+    #run nextflow reference indexing
+    nextflow run umd3.1.create_ref_indexes.simg.nf \
+            --dataDir /data \
+            --fa Bos_taurus.UMD3.1.dna.toplevel.fa \
+            --gtf Bos_taurus.UMD3.1.92.gtf \
+            --vcf bos_taurus_incl_consequences.vcf \
+            --bed 130604_Btau_UMD3_Exome_BM_EZ_HX1.bed \
+            -c "bovine_DNA_RNA.nextflow.simg.config" \
+            -with-report "ref.report.html" \
+            -with-timeline "ref.timeline.html"
 %runscript
     #set locale so multiqc doesn't complain
     export LANG=en_US.UTF-8
