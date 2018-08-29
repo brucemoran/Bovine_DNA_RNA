@@ -43,9 +43,9 @@ From:centos:centos7.4.1708
     #only needed to speed things up in aber
     #export http_proxy="http://wwwcache.aber.ac.uk:8080"
 
-    #1000 Bulls
-    wget http://www.1000bullgenomes.com/doco/1000bulls_v6_annotated_snps.tab.gz
-    wget http://www.1000bullgenomes.com/doco/1000bulls_v6_annotated_indels.tab.gz
+    #1000 Bulls (not required, leaving for legacy)
+    #wget http://www.1000bullgenomes.com/doco/1000bulls_v6_annotated_snps.tab.gz
+    #wget http://www.1000bullgenomes.com/doco/1000bulls_v6_annotated_indels.tab.gz
 
     #DNA genome fasta (toplevel no masking)
     wget ftp://ftp.ensembl.org/pub/release-92/fasta/bos_taurus/dna/Bos_taurus.UMD3.1.dna.toplevel.fa.gz
