@@ -33,7 +33,7 @@ if (params.help) {
 */
 FA = Channel.fromPath("$params.dataDir/$params.fa", type: "file")
 BED = Channel.fromPath("$params.dataDir/$params.bed", type: "file")
-Channel.fromPath("$params.dataDir/$params.gtf", type: "file").into{ refflat_gtf, star_gtf, rrna_gtf }
+Channel.fromPath("$params.dataDir/$params.gtf", type: "file").into{ refflat_gtf; star_gtf; rrna_gtf }
 
 process sortfa {
 
@@ -45,7 +45,6 @@ process sortfa {
 
   output:
   set file('*.sort.fa'), file('*.sort.fa.fai') into (bwa_fasta, star_fasta)
-  file('*.gtf') into (star_gtf, refflat_gtf, )
   file('*.sort.bed') into exome_bed
   file('*.dict') into (fasta_dict, rrna_dict)
 
