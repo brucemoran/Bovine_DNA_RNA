@@ -116,9 +116,10 @@ From:centos:centos7.4.1708
 
     #picard
     wget https://github.com/broadinstitute/picard/releases/download/2.18.9/picard.jar -O /usr/local/lib/picard.jar
+    chmod a+x /usr/local/lib/picard.jar
     echo -e "#! /bin/bash\nexec java -jar /usr/local/lib/picard.jar "$@"" > /usr/local/bin/picard-tools
     chmod a+x /usr/local/bin/picard-tools
-    
+
     #BWA
     wget https://github.com/lh3/bwa/releases/download/v0.7.17/bwa-0.7.17.tar.bz2
     tar xf bwa-0.7.17.tar.bz2
