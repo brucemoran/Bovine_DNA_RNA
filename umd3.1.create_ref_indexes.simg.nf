@@ -45,7 +45,6 @@ process sortfa {
 
   output:
   set file('*.sort.fa'), file('*.sort.fa.fai') into (bwa_fasta, star_fasta)
-  file('*.gtf') into (star_gtf, refflat_gtf, )
   file('*.sort.bed') into exome_bed
   file('*.dict') into (fasta_dict, rrna_dict)
 
