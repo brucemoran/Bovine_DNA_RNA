@@ -33,7 +33,7 @@ if (params.help) {
 */
 FA = Channel.fromPath("$params.dataDir/$params.fa", type: "file")
 BED = Channel.fromPath("$params.dataDir/$params.bed", type: "file")
-Channel.fromPath("$params.dataDir/$params.gtf", type: "file").into{ refflat_gtf, star_gtf, rrna_gtf }
+Channel.fromPath("$params.dataDir/$params.gtf", type: "file").into{ refflat_gtf; star_gtf; rrna_gtf }
 
 process sortfa {
 
