@@ -67,7 +67,8 @@ process sortfa {
   done
 
   samtools faidx \$SORTFA
-  picard-tools CreateSequenceDictionary R=\$SORTFA
+  SORTDICT=\$(echo \$SORTFA | sed 's/.fa\$/.dict/')
+  picard-tools CreateSequenceDictionary R=\$SORTFA O=\$SORTDICT
   """
 }
 

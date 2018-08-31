@@ -72,8 +72,8 @@ From:centos:centos7.4.1708
     echo -e "#! /bin/bash\nexec java -jar /data/genome/reference/hg19/refGene/cramtools-3.0/cramtools-3.0.jar "$@"" > /usr/local/bin/cramtools
     chmod a+x /usr/local/bin/cramtools
 
-    #ensembl vep
-    #the Vep installer needs ensembl which needs bioperl, ensembl didn't have a cpan or rpm package, installing like its 1990!
+    #ensembl VEP
+    #The VEP installer needs Ensembl which needs bioperl, Ensembl didn't have a cpan or rpm package, installing like its 1990!
     #thank goodness it is such a wonderful tool=D
     cd /usr/local/lib
     wget ftp://ftp.ensembl.org/pub/ensembl-api.tar.gz
@@ -117,7 +117,7 @@ From:centos:centos7.4.1708
     #picard
     wget https://github.com/broadinstitute/picard/releases/download/2.18.9/picard.jar -O /usr/local/lib/picard.jar
     chmod a+x /usr/local/lib/picard.jar
-    echo -e "#! /bin/bash\njavamem=""\nif [[ $1 =~ "-Xmx" ]];then javamem=$1; shift 1; fi\nexec java $javamem -jar /usr/local/lib/picard.jar "$@"" > /usr/local/bin/picard-tools
+    echo -e "#! /bin/bash\njavamem=\"\"\nif [[ \$1 =~ "-Xmx" ]];then javamem=\$1; shift 1; fi\nexec java \$javamem -jar /usr/local/lib/picard.jar \"\$@\"" > /usr/local/bin/picard-tools
     chmod a+x /usr/local/bin/picard-tools
 
     #BWA
