@@ -1,4 +1,4 @@
-#!/usr/local/bin/nextflow
+#!/usr/bin/env nextflow
 
 /* indexes required for exome, RNAseq
 * BWA, STAR, exome interval list
@@ -15,10 +15,9 @@ if (params.help) {
   log.info 'Usage: '
   log.info 'nextflow run umd3.1.create_ref_indexes.simg.nf \
             --dataDir /data \
-            --fa Bos_taurus.UMD3.1.dna.toplevel.fa.gz \
-            --gtf Bos_taurus.UMD3.1.92.gtf.gz \
-            --vcf bos_taurus_incl_consequences.vcf.gz \
-            --bed 130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz \
+            --fagz Bos_taurus.UMD3.1.dna.toplevel.fa.gz \
+            --gtfgz Bos_taurus.UMD3.1.92.gtf.gz \
+            --bedgz 130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz \
             -c "bovine_DNA_RNA.nextflow.simg.config" \
             -with-report "ref.report.html" \
             -with-timeline "ref.timeline.html"'
@@ -31,52 +30,58 @@ if (params.help) {
 /* 1.0: Channels from files to unpigz
 * sorts fasta on chrnames, then reorders
 */
-FA = Channel.fromPath("$params.dataDir/$params.fa", type: "file")
-BED = Channel.fromPath("$params.dataDir/$params.bed", type: "file")
-Channel.fromPath("$params.dataDir/$params.gtf", type: "file").into{ refflat_gtf; star_gtf; rrna_gtf }
+FAGZ = Channel.fromPath("$params.dataDir/$params.fagz", type: "file")
+GTFGZ = Channel.fromPath("$params.dataDir/$params.gtfgz", type: "file")
+BEDGZ = Channel.fromPath("$params.dataDir/$params.bedgz", type: "file")
 
 process sortfa {
 
-  publishDir "$params.dataDir/", mode: "copy", pattern: "*"
+  publishDir "$params.dataDir/refs", mode: "copy", pattern: "*[.dict,*.sort.fa,*.sort.fa.fai,*.bed,*.gtf]"
 
   input:
-  file(fa) from FA
-  file(bed) from BED
+  file(fagz) from FAGZ
+  file(gtfgz) from GTFGZ
+  file(bedgz) from BEDGZ
 
   output:
   set file('*.sort.fa'), file('*.sort.fa.fai') into (bwa_fasta, star_fasta)
-  file('*.sort.bed') into exome_bed
+  file('*.gtf') into (star_gtf, refflat_gtf, rrna_gtf)
+  file('*.bed') into exome_bed
   file('*.dict') into (fasta_dict, rrna_dict)
 
   script:
   """
-  SORTBED=\$(echo $bed | sed 's/.bed\$/sort.bed/')
-  cat $bed | sort -Vk1,1 -k2,2n | uniq | perl -ane 'if(scalar(@F) == 3){print \$_;}' > \$SORTBED
+  BED=\$(echo $bedgz | sed 's/.gz\$//')
+  unpigz -c $bedgz | sort -Vk1,1 -k2,2n | uniq | perl -ane 'if(scalar(@F) == 3){print \$_;}' > \$BED
 
-  samtools faidx $fa
-  SORTFA=\$(echo $fa | sed 's/.fa/.sort.fa/')
-  grep ">" $fa | sort -V > sort.chrs
+  unpigz -kf $fagz
+  unpigz -kf $gtfgz
+
+  FA=\$(echo $fagz | sed 's/.gz\$//')
+  samtools faidx \$FA
+  SORTFA=\$(echo \$FA | sed 's/.fa/.sort.fa/')
+  grep ">" \$FA | sort -V > sort.chrs
 
   perl -ane 'chomp; @s=split(/:/);print "\$s[3]:\$s[4]-\$s[5]\\t\$_\\n";' sort.chrs | \
   while read LINE; do
     REG=\$(echo "\$LINE" | cut -f 1)
     NAM=\$(echo "\$LINE" | cut -f 2)
-    samtools faidx $fa \$REG > tmp.fa
+    samtools faidx \$FA \$REG > tmp.fa
     sed -i "1s/.*/\$NAM/" tmp.fa
     cat tmp.fa >> \$SORTFA
   done
 
   samtools faidx \$SORTFA
-  SORTDICT=\$(echo \$SORTFA | sed 's/.fa\$/.dict/')
-  picard-tools CreateSequenceDictionary R=\$SORTFA O=\$SORTDICT
+  picard-tools CreateSequenceDictionary R=\$SORTFA
   """
 }
 
 /* 1.1: Index BWA
+*
 */
 process bwaidx {
 
-  publishDir "$params.dataDir", mode: "copy", pattern: "*"
+  publishDir "$params.dataDir/refs", mode: "copy", pattern: "*"
 
   input:
   set file(fasta), file(faidx) from bwa_fasta
@@ -92,10 +97,11 @@ process bwaidx {
 complete1_1.subscribe { println "Completed BWA indexing" }
 
 /* 1.2: Index STAR
+*
 */
 process staridx {
 
-  publishDir "$params.dataDir", mode: "copy", pattern: "*"
+  publishDir "$params.dataDir/refs", mode: "copy", pattern: "*"
 
   input:
   set file(fasta), file(faidx) from star_fasta
@@ -117,10 +123,11 @@ process staridx {
 complete1_2.subscribe { println "Completed STAR indexing" }
 
 /* 1.3: BED intervalList
+*
 */
 process intlist {
 
-  publishDir "$params.dataDir", mode: "copy", pattern: "*"
+  publishDir "$params.dataDir/refs", mode: "copy", pattern: "*.interval_list"
 
   input:
   file(fastadict) from fasta_dict
@@ -139,10 +146,11 @@ process intlist {
 complete1_3.subscribe { println "Completed exome interval_list" }
 
 /* 1.4: refFlat for RNAseq
+*
 */
 process refFlat {
 
-  publishDir "$params.dataDir", mode: "copy", pattern: "*"
+  publishDir "$params.dataDir/refs", mode: "copy", pattern: "*.refFlat"
 
   input:
   file(gtf) from refflat_gtf
@@ -166,10 +174,11 @@ process refFlat {
 complete1_4.subscribe { println "Completed refFlat" }
 
 /* 1.5: rRNA for RNAseq
+*
 */
 process rRNA {
 
-  publishDir "$params.dataDir", mode: "copy", pattern: "*"
+  publishDir "$params.dataDir/refs", mode: "copy", pattern: "*.rRNA.interval_list"
 
   input:
   file(dict) from rrna_dict
