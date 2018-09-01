@@ -15,9 +15,9 @@ if (params.help) {
   log.info 'Usage: '
   log.info 'nextflow run umd3.1.create_ref_indexes.simg.nf \
             --dataDir /data \
-            --fagz Bos_taurus.UMD3.1.dna.toplevel.fa.gz \
-            --gtfgz Bos_taurus.UMD3.1.92.gtf.gz \
-            --bedgz 130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz \
+            --fa Bos_taurus.UMD3.1.dna.toplevel.fa.gz \
+            --gtf Bos_taurus.UMD3.1.92.gtf.gz \
+            --bed 130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz \
             -c "bovine_DNA_RNA.nextflow.simg.config" \
             -with-report "ref.report.html" \
             -with-timeline "ref.timeline.html"'
@@ -30,18 +30,18 @@ if (params.help) {
 /* 1.0: Channels from files to unpigz
 * sorts fasta on chrnames, then reorders
 */
-FAGZ = Channel.fromPath("$params.dataDir/$params.fagz", type: "file")
-GTFGZ = Channel.fromPath("$params.dataDir/$params.gtfgz", type: "file")
-BEDGZ = Channel.fromPath("$params.dataDir/$params.bedgz", type: "file")
+FA = Channel.fromPath("$params.dataDir/$params.fa", type: "file")
+GTF = Channel.fromPath("$params.dataDir/$params.gtf", type: "file")
+BED = Channel.fromPath("$params.dataDir/$params.bed", type: "file")
 
 process sortfa {
 
   publishDir "$params.dataDir/refs", mode: "copy", pattern: "*[.dict,*.sort.fa,*.sort.fa.fai,*.bed,*.gtf]"
 
   input:
-  file(fagz) from FAGZ
-  file(gtfgz) from GTFGZ
-  file(bedgz) from BEDGZ
+  file(fagz) from FA
+  file(gtfgz) from GTF
+  file(bedgz) from BED
 
   output:
   set file('*.sort.fa'), file('*.sort.fa.fai') into (bwa_fasta, star_fasta)
