@@ -209,7 +209,8 @@ From:centos:centos7.4.1708
     #NextFlow
     curl -s https://get.nextflow.io | bash
     mv nextflow /usr/local/bin/
-
+    chmod 777 /usr/local/bin/nextflow
+        
     #for required data files
     mkdir /data
     cd /data
