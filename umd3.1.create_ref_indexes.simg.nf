@@ -15,7 +15,7 @@ if (params.help) {
   log.info 'Usage: '
   log.info 'nextflow run umd3.1.create_ref_indexes.simg.nf \
             --refDir refs \
-            -with-singularity bovine_DNA_RNA.simg
+            -with-singularity bovine_DNA_RNA.simg \
             -c "bovine_DNA_RNA.nextflow.simg.config" \
             -with-report "ref.report.html" \
             -with-timeline "ref.timeline.html"'
@@ -58,7 +58,7 @@ process downloadData {
 */
 process sortfa {
 
-  publishDir "$params.dataDir/refs", mode: "copy", pattern: "*[.dict,*.sort.fa,*.sort.fa.fai,*.bed,*.gtf]"
+  publishDir "$params.refDir", mode: "copy", pattern: "*[.dict,*.sort.fa,*.sort.fa.fai,*.bed,*.gtf]"
 
   input:
   file(fagz) from fa
@@ -103,7 +103,7 @@ process sortfa {
 */
 process bwaidx {
 
-  publishDir "$params.dataDir/refs", mode: "copy", pattern: "*"
+  publishDir "$params.refDir", mode: "copy", pattern: "*"
 
   input:
   set file(fasta), file(faidx) from bwa_fasta
@@ -123,7 +123,7 @@ complete1_1.subscribe { println "Completed BWA indexing" }
 */
 process staridx {
 
-  publishDir "$params.dataDir/refs", mode: "copy", pattern: "*"
+  publishDir "$params.refDir", mode: "copy", pattern: "*"
 
   input:
   set file(fasta), file(faidx) from star_fasta
@@ -149,7 +149,7 @@ complete1_2.subscribe { println "Completed STAR indexing" }
 */
 process intlist {
 
-  publishDir "$params.dataDir/refs", mode: "copy", pattern: "*.interval_list"
+  publishDir "$params.refDir", mode: "copy", pattern: "*.interval_list"
 
   input:
   file(fastadict) from fasta_dict
@@ -172,7 +172,7 @@ complete1_3.subscribe { println "Completed exome interval_list" }
 */
 process refFlat {
 
-  publishDir "$params.dataDir/refs", mode: "copy", pattern: "*.refFlat"
+  publishDir "$params.refDir", mode: "copy", pattern: "*.refFlat"
 
   input:
   file(gtf) from refflat_gtf
@@ -200,7 +200,7 @@ complete1_4.subscribe { println "Completed refFlat" }
 */
 process rRNA {
 
-  publishDir "$params.dataDir/refs", mode: "copy", pattern: "*.rRNA.interval_list"
+  publishDir "$params.refDir", mode: "copy", pattern: "*.rRNA.interval_list"
 
   input:
   file(dict) from rrna_dict
