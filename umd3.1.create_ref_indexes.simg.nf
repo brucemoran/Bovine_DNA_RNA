@@ -40,16 +40,20 @@ process downloadData {
   script:
   """
   #DNA genome fasta (toplevel no masking)
-  wget ftp://ftp.ensembl.org/pub/release-92/fasta/bos_taurus/dna/Bos_taurus.UMD3.1.dna.toplevel.fa.gz
+  wget -O Bos_taurus.UMD3.1.dna.toplevel.fa.gz \
+    ftp://ftp.ensembl.org/pub/release-92/fasta/bos_taurus/dna/Bos_taurus.UMD3.1.dna.toplevel.fa.gz
 
   #GTF
-  wget ftp://ftp.ensembl.org/pub/release-92/gtf/bos_taurus/Bos_taurus.UMD3.1.92.gtf.gz
+  wget -O Bos_taurus.UMD3.1.92.gtf.gz \
+    ftp://ftp.ensembl.org/pub/release-92/gtf/bos_taurus/Bos_taurus.UMD3.1.92.gtf.gz
 
   #exome
-  wget https://raw.githubusercontent.com/brucemoran/Bovine_DNA_RNA/master/130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz
+  wget -O 130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz \
+    https://raw.githubusercontent.com/brucemoran/Bovine_DNA_RNA/master/130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz
 
   #variants
-  wget ftp://ftp.ensembl.org/pub/release-92/variation/vcf/bos_taurus/bos_taurus_incl_consequences.vcf.gz
+  wget -O bos_taurus_incl_consequences.vcf.gz \
+    ftp://ftp.ensembl.org/pub/release-92/variation/vcf/bos_taurus/bos_taurus_incl_consequences.vcf.gz
   """
 }
 
