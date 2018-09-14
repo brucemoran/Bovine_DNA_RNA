@@ -14,10 +14,8 @@ if (params.help) {
   log.info ''
   log.info 'Usage: '
   log.info 'nextflow run umd3.1.create_ref_indexes.simg.nf \
-            --dataDir /data \
-            --fa Bos_taurus.UMD3.1.dna.toplevel.fa.gz \
-            --gtf Bos_taurus.UMD3.1.92.gtf.gz \
-            --bed 130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz \
+            --refDir refs \
+            -with-singularity bovine_DNA_RNA.simg
             -c "bovine_DNA_RNA.nextflow.simg.config" \
             -with-report "ref.report.html" \
             -with-timeline "ref.timeline.html"'
@@ -27,21 +25,45 @@ if (params.help) {
   exit 1
 }
 
+/* 0.0: Download ref data, unpigz
+*/
+
+process downloadData {
+
+  publishDir: "$params.dataDir/refs", mode: "copy", pattern: "*.vcf.gz"
+
+  output:
+  file('*.fa.gz') into fa
+  file('*.gtf.gz') into gtf
+  file('*.fa.gz') into bed
+
+  script:
+  """
+  #DNA genome fasta (toplevel no masking)
+  wget ftp://ftp.ensembl.org/pub/release-92/fasta/bos_taurus/dna/Bos_taurus.UMD3.1.dna.toplevel.fa.gz
+
+  #GTF
+  wget ftp://ftp.ensembl.org/pub/release-92/gtf/bos_taurus/Bos_taurus.UMD3.1.92.gtf.gz
+
+  #exome
+  wget https://raw.githubusercontent.com/brucemoran/Bovine_DNA_RNA/master/130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz
+
+  #variants
+  wget ftp://ftp.ensembl.org/pub/release-92/variation/vcf/bos_taurus/bos_taurus_incl_consequences.vcf.gz
+  """
+}
+
 /* 1.0: Channels from files to unpigz
 * sorts fasta on chrnames, then reorders
 */
-FA = Channel.fromPath("$params.dataDir/$params.fa", type: "file")
-GTF = Channel.fromPath("$params.dataDir/$params.gtf", type: "file")
-BED = Channel.fromPath("$params.dataDir/$params.bed", type: "file")
-
 process sortfa {
 
   publishDir "$params.dataDir/refs", mode: "copy", pattern: "*[.dict,*.sort.fa,*.sort.fa.fai,*.bed,*.gtf]"
 
   input:
-  file(fagz) from FA
-  file(gtfgz) from GTF
-  file(bedgz) from BED
+  file(fagz) from fa
+  file(gtfgz) from gtf
+  file(bedgz) from bed
 
   output:
   set file('*.sort.fa'), file('*.sort.fa.fai') into (bwa_fasta, star_fasta)
@@ -112,12 +134,12 @@ process staridx {
 
   script:
   """
-  mkdir STAR_99
+  mkdir STAR_${params.STARsjdbOverhang}
   STAR --runMode genomeGenerate \
-       --genomeDir STAR_99 \
+       --genomeDir STAR_${params.STARsjdbOverhang} \
        --genomeFastaFiles $fasta \
        --sjdbGTFfile $gtf \
-       --sjdbOverhang 99
+       --sjdbOverhang ${params.STARsjdbOverhang}
   """
 }
 complete1_2.subscribe { println "Completed STAR indexing" }

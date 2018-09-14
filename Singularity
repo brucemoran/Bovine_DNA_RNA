@@ -6,6 +6,7 @@ From:centos:centos7.4.1708
 
 %labels
     MAINTAINER Colin Sauze
+    MAINTAINER Bruce Moran
 
 %environment
     #define environment variables here
@@ -210,48 +211,6 @@ From:centos:centos7.4.1708
     curl -s https://get.nextflow.io | bash
     mv nextflow /usr/local/bin/
     chmod 777 /usr/local/bin/nextflow
-
-    #for required data files
-    mkdir /data
-    chmod 777 /data/ 
-    cd /data
-
-    #NextFlow reference indexing/manipulation script, config
-    wget https://raw.githubusercontent.com/brucemoran/Bovine_DNA_RNA/master/umd3.1.create_ref_indexes.simg.nf
-    wget https://raw.githubusercontent.com/brucemoran/Bovine_DNA_RNA/master/bovine_DNA_RNA.nextflow.simg.config
-
-    #only needed to speed things up in aber
-    #export http_proxy="http://wwwcache.aber.ac.uk:8080"
-
-    #DNA genome fasta (toplevel no masking)
-    wget ftp://ftp.ensembl.org/pub/release-92/fasta/bos_taurus/dna/Bos_taurus.UMD3.1.dna.toplevel.fa.gz
-
-    #GTF
-    wget ftp://ftp.ensembl.org/pub/release-92/gtf/bos_taurus/Bos_taurus.UMD3.1.92.gtf.gz
-
-    #variants
-    wget ftp://ftp.ensembl.org/pub/release-92/variation/vcf/bos_taurus/bos_taurus_incl_consequences.vcf.gz
-
-    #exome
-    wget https://raw.githubusercontent.com/brucemoran/Bovine_DNA_RNA/master/130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz
-
-    #run nextflow reference indexing
-    ##nextflow run umd3.1.create_ref_indexes.simg.nf \
-    ##        --dataDir /data \
-    ##        --fa Bos_taurus.UMD3.1.dna.toplevel.fa.gz \
-    ##        --gtf Bos_taurus.UMD3.1.92.gtf.gz \
-    ##        --bed 130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz \
-    ##        -c "bovine_DNA_RNA.nextflow.simg.config" \
-    ##        -with-report "ref.report.html" \
-    ##        -with-timeline "ref.timeline.html"
-
-    #cleanup and remove redundant files
-    ##nextflow clean -f
-
-    ##rm -rf /data/work
-    ##rm /data/Bos_taurus.UMD3.1.dna.toplevel.fa.gz
-    ##rm /data/130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz
-    ##rm /data/Bos_taurus.UMD3.1.92.gtf.gz
 
 %runscript
     #set locale so multiqc doesn't complain
