@@ -212,6 +212,13 @@ From:centos:centos7.4.1708
     mv nextflow /usr/local/bin/
     chmod 777 /usr/local/bin/nextflow
 
+    #SRA toolkit
+    wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-centos_linux64.tar.gz
+    tar xf sratoolkit.current-centos_linux64.tar.gz
+    cd $(ls -d sratoolkit* | grep -v .gz)
+    mv ./bin fasterq-dump /usr/local/bin/
+    cd /usr/local/src
+
 %runscript
     #set locale so multiqc doesn't complain
     export LANG=en_US.UTF-8

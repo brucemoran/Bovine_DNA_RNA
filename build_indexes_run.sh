@@ -6,3 +6,9 @@
 sudo -E env "PATH=$PATH" singularity build --writable bovine_DNA_RNA.simg Singularity
 
 ##genome indexes are not necessarily required by users as they may already exist on their local system; if genome indexes are required for BWA (~4GB) and STAR (~30GB), run the Nextflow scripts into a local reference direcetory which is then also supplied to the NextFlow main script
+nextflow run umd3.1.create_ref_indexes.simg.nf \
+  --refDir refs \
+  -with-singularity bovine_DNA_RNA.simg \
+  -c umd3.1.RNAseq_STAR.exome_BWA.GATK4-HC.simg.nextflow.config \
+  -with-report "ref.report.html" \
+  -with-timeline "ref.timeline.html"

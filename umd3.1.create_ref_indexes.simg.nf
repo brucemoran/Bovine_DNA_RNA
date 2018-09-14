@@ -25,34 +25,53 @@ if (params.help) {
   exit 1
 }
 
-/* 0.0: Download ref data, unpigz
+/* 0.0: Download ref data
 */
 
-process downloadData {
-
-  publishDir "$params.refDir", mode: "copy", pattern: "*.vcf.gz"
+process downloadFa {
 
   output:
   file('*.fa.gz') into fa
-  file('*.gtf.gz') into gtf
-  file('*.fa.gz') into bed
 
   script:
   """
-  #DNA genome fasta (toplevel no masking)
-  wget -O Bos_taurus.UMD3.1.dna.toplevel.fa.gz \
+  wget -O ./Bos_taurus.UMD3.1.dna.toplevel.fa.gz \
     ftp://ftp.ensembl.org/pub/release-92/fasta/bos_taurus/dna/Bos_taurus.UMD3.1.dna.toplevel.fa.gz
+  """
+}
 
-  #GTF
-  wget -O Bos_taurus.UMD3.1.92.gtf.gz \
+process downloadGtf {
+
+
+  output:
+  file('*.gtf.gz') into gtf
+
+  script:
+  """
+  wget -O ./Bos_taurus.UMD3.1.92.gtf.gz \
     ftp://ftp.ensembl.org/pub/release-92/gtf/bos_taurus/Bos_taurus.UMD3.1.92.gtf.gz
+  """
+}
 
-  #exome
-  wget -O 130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz \
+process downloadBed {
+
+  output:
+  file('*.bed.gz') into bed
+
+  script:
+  """
+  wget -O ./130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz \
     https://raw.githubusercontent.com/brucemoran/Bovine_DNA_RNA/master/130604_Btau_UMD3_Exome_BM_EZ_HX1.bed.gz
+  """
+}
 
-  #variants
-  wget -O bos_taurus_incl_consequences.vcf.gz \
+process downloadVcf {
+
+  publishDir "$params.refDir", mode: "copy", pattern: "*.vcf.gz"
+
+  script:
+  """
+  wget -O ./bos_taurus_incl_consequences.vcf.gz \
     ftp://ftp.ensembl.org/pub/release-92/variation/vcf/bos_taurus/bos_taurus_incl_consequences.vcf.gz
   """
 }
@@ -217,10 +236,10 @@ process rRNA {
   """
   RRNA=\$(echo $gtf | sed 's/gtf/rRNA.interval_list/')
   cat $dict > \$RRNA
-  grep "gene_biotype \"rRNA\"" $gtf | \
+  grep "gene_biotype \\"rRNA\\"" $gtf | \
   perl -ane 'if(\$F[2] eq "transcript"){
-    \$gn=\$F[13]; \$gn=~s/\"//g; print "\$F[0]\t\$F[3]\t\$F[4]\t\$F[6]\t\$gn\n";
-  }' >> \$RRNA
+    \$gn=\$F[13]; \$gn=~s/\"//g; \$gn=~s/;//g; print "\$F[0]\\t\$F[3]\\t\$F[4]\\t\$F[6]\\t\$gn\\n";
+  }' | sort -V >> \$RRNA
   """
 }
 complete1_5.subscribe { println "Completed rRNA interval_list" }
