@@ -30,7 +30,7 @@ if (params.help) {
 
 process downloadData {
 
-  publishDir: "$params.dataDir/refs", mode: "copy", pattern: "*.vcf.gz"
+  publishDir "$params.refDir", mode: "copy", pattern: "*.vcf.gz"
 
   output:
   file('*.fa.gz') into fa
