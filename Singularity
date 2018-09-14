@@ -219,8 +219,17 @@ From:centos:centos7.4.1708
     mv ./bin/fasterq-dump /usr/local/bin/
     cd /usr/local/src
 
+    ##to allow fasterq-dump to correctly work
+    wget https://raw.githubusercontent.com/ncbi/ncbi-vdb/master/libs/kfg/default.kfg -P /home/.ncbi/
+
+    ## Here, set "/repository/user/main/public/root" to "/work/group/username/ncbi/public", where group is the name of your HCC group, and username is your HCC username
+    ##this from: https://hcc-docs.unl.edu/display/HCCDOC/SRAtoolkit
+    sed 's#/repository/user/main/public/root = "$(HOME)/ncbi/public"#/repository/user/main/public/root = /tmp' /home/.ncbi/default.kfg > 1
+    mv 1 /home/.ncbi/default.kfg
+
 %runscript
     #set locale so multiqc doesn't complain
     export LANG=en_US.UTF-8
+    export VDB_CONFIG=/home/.ncbi/default.kfg
 
     #running stuff
