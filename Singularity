@@ -224,8 +224,9 @@ From:centos:centos7.4.1708
 
     ## Here, set "/repository/user/main/public/root" to "/work/group/username/ncbi/public", where group is the name of your HCC group, and username is your HCC username
     ##this from: https://hcc-docs.unl.edu/display/HCCDOC/SRAtoolkit
-    sed 's#/repository/user/main/public/root = "$(HOME)/ncbi/public"#/repository/user/main/public/root = /tmp#' /home/.ncbi/default.kfg > 1
+    sed 's#/repository/user/main/public/root = "$(HOME)/ncbi/public"#/repository/user/main/public/root = "/tmp"#' /home/.ncbi/default.kfg > 1
     mv 1 /home/.ncbi/default.kfg
+    export VDB_CONFIG=/home/.ncbi/default.kfg
 
 %runscript
     #set locale so multiqc doesn't complain
