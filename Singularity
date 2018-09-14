@@ -216,7 +216,7 @@ From:centos:centos7.4.1708
     wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-centos_linux64.tar.gz
     tar xf sratoolkit.current-centos_linux64.tar.gz
     cd $(ls -d sratoolkit* | grep -v .gz)
-    mv ./bin/fasterq-dump /usr/local/bin/
+    mv ./bin/fasterq-dum* /usr/local/bin/
     cd /usr/local/src
 
     ##to allow fasterq-dump to correctly work
