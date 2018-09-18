@@ -149,10 +149,8 @@ From:centos:centos7.4.1708
     #fastqc
     wget https://github.com/s-andrews/FastQC/archive/v0.11.7.tar.gz
     tar xf v0.11.7.tar.gz
-    cd FastQC-0.11.7
-    mv *.jar /usr/local/lib
-    mv fastqc /usr/local/bin
-    chmod 755 /usr/local/bin/fastqc
+    chmod 755 /usr/local/src/FastQC-0.11.7/fastqc
+    ln -s /usr/local/src/FastQC-0.11.7/fastqc /usr/local/bin/fastqc
     cd /usr/local/src
 
     #multiqc
