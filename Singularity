@@ -220,7 +220,9 @@ From:centos:centos7.4.1708
     cd /usr/local/src
 
 %runscript
-    #set locale so multiqc doesn't complain
+    #set locales
     export LANG=en_US.UTF-8
+    export LANGUAGE=en_US.UTF-8
+    export LC_ALL=en_US.UTF-8
 
     #running [no] stuff
