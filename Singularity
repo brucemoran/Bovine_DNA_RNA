@@ -6,7 +6,6 @@ From:centos:centos7.4.1708
 
 %labels
     MAINTAINER Colin Sauze
-    MAINTAINER Bruce Moran
 
 %environment
     #define environment variables here
@@ -32,7 +31,7 @@ From:centos:centos7.4.1708
     # note built without mysql support, error message:
     # WARNING: DBD::mysql module not found. VEP can only run in offline (--offline) mode without DBD::mysql installed
     #
-    yum install -y perl-CPAN perl-IO-Socket-SSL perl-Archive-Any perl-YAML perl-CPAN-Meta perl-Digest-MD5 perl-App-cpanminus perl-local-lib
+    yum install -y perl-CPAN perl-IO-Socket-SSL perl-Archive-Any perl-YAML perl-CPAN-Meta perl-Digest-MD5 perl-App-cpanminus perl-local-lib emacs
 
     #we only have US locales installed and complaints happen if host system locale is something different
     export LANG=en_US.UTF-8
@@ -217,20 +216,11 @@ From:centos:centos7.4.1708
     tar xf sratoolkit.current-centos_linux64.tar.gz
     cd $(ls -d sratoolkit* | grep -v .gz)
     mv ./bin/fasterq-dum* /usr/local/bin/
+    mv ./bin/prefetc* /usr/local/bin/
     cd /usr/local/src
-
-    ##to allow fasterq-dump to correctly work
-    wget https://raw.githubusercontent.com/ncbi/ncbi-vdb/master/libs/kfg/default.kfg -P /home/.ncbi/
-
-    ## Here, set "/repository/user/main/public/root" to "/work/group/username/ncbi/public", where group is the name of your HCC group, and username is your HCC username
-    ##this from: https://hcc-docs.unl.edu/display/HCCDOC/SRAtoolkit
-    sed 's#/repository/user/main/public/root = "$(HOME)/ncbi/public"#/repository/user/main/public/root = "/tmp"#' /home/.ncbi/default.kfg > 1
-    mv 1 /home/.ncbi/default.kfg
-    export VDB_CONFIG=/home/.ncbi/default.kfg
 
 %runscript
     #set locale so multiqc doesn't complain
     export LANG=en_US.UTF-8
-    export VDB_CONFIG=/home/.ncbi/default.kfg
 
-    #running stuff
+    #running [no] stuff
