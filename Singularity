@@ -159,11 +159,10 @@ From:centos:centos7.4.1708
 
     #BBMap
     wget "https://downloads.sourceforge.net/project/bbmap/BBMap_38.11.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fbbmap%2Ffiles%2FBBMap_38.11.tar.gz%2Fdownload&ts=1531223392" -O BBMap_38.11.tar.gz
-
     tar xf BBMap_38.11.tar.gz
-    #its all shell scripts, don't really know where to put them
-    echo "BBmap done"
-    read r
+    cd bbmap
+    mv bbduk.sh /usr/local/bin/
+    cd /usr/local/src
 
     #gatk
     wget https://github.com/broadinstitute/gatk/releases/download/4.0.6.0/gatk-4.0.6.0.zip
@@ -179,10 +178,11 @@ From:centos:centos7.4.1708
     #SnpEff
     wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
     unzip snpEff_latest_core.zip
-    echo "snpeff done"
-    read r
-
-    # doesn't really make sense to put this elsewhere in /usr/local, so just leaving it in /usr/local/src
+    cd snpEff
+    mv snpEff.jar /usr/local/lib
+    chmod a+x /usr/local/lib/snpEff.jar
+    echo -e "#! /bin/bash\njavamem=\"\"\nif [[ \$1 =~ "-Xmx" ]];then javamem=\$1; shift 1; fi\nexec java \$javamem -jar /usr/local/lib/snpEff.jar \"\$@\"" > /usr/local/bin/snpEff
+    chmod a+x /usr/local/bin/snpEff
 
     #plink-ng
     wget https://github.com/chrchang/plink-ng/archive/b0cec5e.tar.gz
