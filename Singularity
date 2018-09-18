@@ -37,6 +37,7 @@ From:centos:centos7.4.1708
     ##workaround: https://github.com/CentOS/sig-cloud-instance-images/issues/71
     localedef -i en_US -f UTF-8 en_US.UTF-8
     echo -e "LANG=\"en_US.UTF-8\"\nLANGUAGE=\"en_US.UTF-8\"\nLC_ALL=\"en_US.UTF-8\"" >> /etc/locale.conf
+    
 
     #samtools
     wget https://github.com/samtools/samtools/releases/download/1.8/samtools-1.8.tar.bz2
