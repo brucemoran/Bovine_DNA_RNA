@@ -15,7 +15,7 @@ From:centos:centos7.4.1708
     yum -y install git wget bzip2 unzip which
 
     #language and libraries
-    yum -y install java-1.8.0-openjdk-devel gcc gcc-c++ glibc glibc-devel make ncurses-devel zlib-devel libbzip2-devel bzip2-devel xz-devel perl-DBI lapack-devel atlas-devel
+    yum -y install java-1.8.0-openjdk-devel gcc gcc-c++ glibc-devel make ncurses-devel zlib-devel libbzip2-devel bzip2-devel xz-devel perl-DBI lapack-devel atlas-devel
     #libclas and libatlas aren't put in the right places
     ln -s /usr/lib64/atlas/libtatlas.so /usr/lib64/libatlas.so
     ln -s /usr/lib64/atlas/libsatlas.so /usr/lib64/libcblas.so
@@ -34,10 +34,9 @@ From:centos:centos7.4.1708
     yum install -y perl-CPAN perl-IO-Socket-SSL perl-Archive-Any perl-YAML perl-CPAN-Meta perl-Digest-MD5 perl-App-cpanminus perl-local-lib emacs
 
     ##setting more that LANG locale is an issue for several tools
-    ##workaround: https://github.com/CentOS/sig-cloud-instance-images/issues/71
+    ##https://github.com/CentOS/sig-cloud-instance-images/issues/71
     localedef -i en_US -f UTF-8 en_US.UTF-8
-    echo -e "LANG=\"en_US.UTF-8\"\nLANGUAGE=\"en_US.UTF-8\"\nLC_ALL=\"en_US.UTF-8\"" >> /etc/locale.conf
-    
+    echo -e "LANGUAGE=\"en_US.UTF-8\"\nLC_ALL=\"en_US.UTF-8\"" >> /etc/locale.conf
 
     #samtools
     wget https://github.com/samtools/samtools/releases/download/1.8/samtools-1.8.tar.bz2
@@ -146,12 +145,13 @@ From:centos:centos7.4.1708
     wget https://github.com/pachterlab/kallisto/releases/download/v0.44.0/kallisto_linux-v0.44.0.tar.gz
     tar xf kallisto_linux-v0.44.0.tar.gz
     mv kallisto_linux-v0.44.0/kallisto /usr/local/bin
+    cd /usr/local/src
 
     #fastqc
-    wget https://github.com/s-andrews/FastQC/archive/v0.11.7.tar.gz
-    tar xf v0.11.7.tar.gz
-    chmod 755 /usr/local/src/FastQC-0.11.7/fastqc
-    ln -s /usr/local/src/FastQC-0.11.7/fastqc /usr/local/bin/fastqc
+    wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.11.7.zip
+    unzip fastqc_v0.11.7.zip
+    chmod a+x /usr/local/src/FastQC/fastqc
+    ln -s /usr/local/src/FastQC/fastqc /usr/local/bin/fastqc
     cd /usr/local/src
 
     #multiqc
