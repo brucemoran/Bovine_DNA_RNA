@@ -15,7 +15,7 @@ From:centos:centos7.4.1708
     yum -y install git wget bzip2 unzip which
 
     #language and libraries
-    yum -y install java-1.8.0-openjdk-devel gcc gcc-c++ glibc-devel make ncurses-devel zlib-devel libbzip2-devel bzip2-devel xz-devel perl-DBI lapack-devel atlas-devel
+    yum -y install java-1.8.0-openjdk-devel gcc gcc-c++ glibc glibc-devel make ncurses-devel zlib-devel libbzip2-devel bzip2-devel xz-devel perl-DBI lapack-devel atlas-devel
     #libclas and libatlas aren't put in the right places
     ln -s /usr/lib64/atlas/libtatlas.so /usr/lib64/libatlas.so
     ln -s /usr/lib64/atlas/libsatlas.so /usr/lib64/libcblas.so
@@ -33,8 +33,9 @@ From:centos:centos7.4.1708
     #
     yum install -y perl-CPAN perl-IO-Socket-SSL perl-Archive-Any perl-YAML perl-CPAN-Meta perl-Digest-MD5 perl-App-cpanminus perl-local-lib emacs
 
-    #we only have US locales installed and complaints happen if host system locale is something different
-    export LANG=en_US.UTF-8
+    ##setting more that LANG locale is an issue for several tools
+    ##workaround: https://github.com/CentOS/sig-cloud-instance-images/issues/71
+    localedef -i en_US -f UTF-8 en_US.UTF-8
 
     #samtools
     wget https://github.com/samtools/samtools/releases/download/1.8/samtools-1.8.tar.bz2
