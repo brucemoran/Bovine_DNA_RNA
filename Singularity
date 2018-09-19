@@ -23,6 +23,7 @@ From:centos:centos7.4.1708
     yum -y install https://centos7.iuscommunity.org/ius-release.rpm
     yum -y install python36u python36u-pip python36u-devel
     pip3.6 install --upgrade pip
+    pip3.6 install --upgrade setuptools
 
     mkdir -p /usr/local/src
     cd /usr/local/src
