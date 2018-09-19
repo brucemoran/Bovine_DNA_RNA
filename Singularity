@@ -163,7 +163,7 @@ From:centos:centos7.4.1708
     wget "https://downloads.sourceforge.net/project/bbmap/BBMap_38.11.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fbbmap%2Ffiles%2FBBMap_38.11.tar.gz%2Fdownload&ts=1531223392" -O BBMap_38.11.tar.gz
     tar xf BBMap_38.11.tar.gz
     cd bbmap
-    ln -s ${PWD}/*.sh /usr/local/bin/
+    ln -s /usr/local/src/bbmap/*.sh /usr/local/bin/
     cd /usr/local/src
 
     #gatk
