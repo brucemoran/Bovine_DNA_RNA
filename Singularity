@@ -15,7 +15,7 @@ From:centos:centos7.4.1708
     yum -y install git wget bzip2 unzip which
 
     #language and libraries
-    yum -y install java-1.8.0-openjdk-devel gcc gcc-c++ glibc-devel make ncurses-devel zlib-devel libbzip2-devel bzip2-devel xz-devel perl-DBI lapack-devel atlas-devel
+    yum -y install java-1.8.0-openjdk-devel gcc gcc-c++ glibc-devel make ncurses-devel zlib-devel libbzip2-devel bzip2-devel xz-devel perl-DBI lapack-devel atlas-devel freetype freetype-devel libpng-devel
     #libclas and libatlas aren't put in the right places
     ln -s /usr/lib64/atlas/libtatlas.so /usr/lib64/libatlas.so
     ln -s /usr/lib64/atlas/libsatlas.so /usr/lib64/libcblas.so
@@ -28,6 +28,9 @@ From:centos:centos7.4.1708
     mkdir -p /usr/local/src
     cd /usr/local/src
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+
+    #multiqc
+    pip3.6 install multiqc
 
     # ensembl vep
     # note built without mysql support, error message:
@@ -155,9 +158,6 @@ From:centos:centos7.4.1708
     chmod a+x /usr/local/src/FastQC/fastqc
     ln -s /usr/local/src/FastQC/fastqc /usr/local/bin/fastqc
     cd /usr/local/src
-
-    #multiqc
-    pip3.6 install multiqc
 
     #BBMap
     wget "https://downloads.sourceforge.net/project/bbmap/BBMap_38.11.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fbbmap%2Ffiles%2FBBMap_38.11.tar.gz%2Fdownload&ts=1531223392" -O BBMap_38.11.tar.gz
