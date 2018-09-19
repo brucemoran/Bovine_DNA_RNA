@@ -166,6 +166,7 @@ From:centos:centos7.4.1708
     ln -s /usr/local/src/bbmap/*.sh /usr/local/bin/
     cd /usr/local/src
 
+
     #gatk
     wget https://github.com/broadinstitute/gatk/releases/download/4.0.6.0/gatk-4.0.6.0.zip
     unzip gatk-4.0.6.0.zip
