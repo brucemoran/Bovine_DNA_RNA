@@ -166,17 +166,19 @@ From:centos:centos7.4.1708
     ln -s /usr/local/src/bbmap/*.sh /usr/local/bin/
     cd /usr/local/src
 
+    #sam2bam
+    wget https://github.com/t-ogasawara/sam-to-bam/raw/master/build.sh
+    bash build.sh
 
     #gatk
     wget https://github.com/broadinstitute/gatk/releases/download/4.0.6.0/gatk-4.0.6.0.zip
     unzip gatk-4.0.6.0.zip
     cd gatk-4.0.6.0
     mv gatk-package-4.0.6.0-local.jar /usr/local/lib
+    export GATK_LOCAL_JAR=/usr/local/lib/gatk-package-4.0.6.0-local.jar
     mv gatk /usr/local/bin
     mv gatk-completion.sh /usr/local/bin
     cd /usr/local/src
-
-    #don't think we need anything from the scripts subdir
 
     #SnpEff
     wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
