@@ -95,7 +95,7 @@ From:centos:centos7.4.1708
     echo "y" > commands
     echo "y" >> commands #agree to install cache files
     echo "10" >> commands #choose bos_taurus_merged_vep_92_UMD3.1.tar.gz
-    echo "y" >> commands #overwrite cached files, is this needed -> no
+    echo "n" >> commands #overwrite cached files, is this needed -> no
     echo "n" >> commands #don't install FASTA files -> can use and specify in NextFlow scripts
     echo "n" >> commands #don't install plugins -> may need to revise (dbNSFP?)
 
