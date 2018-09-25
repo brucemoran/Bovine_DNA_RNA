@@ -8,7 +8,8 @@ From:centos:centos7.4.1708
     MAINTAINER Colin Sauze
 
 %environment
-    #define environment variables here
+    #environment variables defined in post section using
+    ##SINGULARITY_ENVIRONMENT variable
 
 %post
     #essential utilities
@@ -28,6 +29,9 @@ From:centos:centos7.4.1708
 
     mkdir -p /usr/local/src
     cd /usr/local/src
+
+    ##define env vars via S..._E... env var when in post
+    ##see: https://www.sylabs.io/guides/2.5/user-guide/environment_and_metadata.html
     echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib' >> $SINGULARITY_ENVIRONMENT
 
     ##R
@@ -109,12 +113,13 @@ From:centos:centos7.4.1708
     tar xf ensembl-api.tar.gz
     tar xf BioPerl-1.6.924.tar.gz
 
-    export PERL5LIB=${PERL5LIB}:/usr/local/lib/ensembl/modules:/usr/local/lib/ensembl-io/modules:/usr/local/lib/ensembl-variation/modules:/usr/local/lib/ensembl-funcgen/modules
+    echo 'export PERL5LIB=${PERL5LIB}:/usr/local/lib/ensembl/modules:/usr/local/lib/ensembl-io/modules:/usr/local/lib/ensembl-variation/modules:/usr/local/lib/ensembl-funcgen/modules' >>$SINGULARITY_ENVIRONMENT
 
     #but the bioperl we just downloaded is missing the DB:HTS module, so use cpan to install it
     #this prompts us to install a load of extra bits of bioperl, tell it not to
     #yes n | cpan install Bio::DB::HTS
     cpanm install --force Bio::DB::HTS #version mismatch in the tests requires forcing, actual program ok
+    cpanm DBI
 
     #cpan Module::Build
 
@@ -131,7 +136,8 @@ From:centos:centos7.4.1708
     echo "n" >> commands #don't install FASTA files -> can use and specify in NextFlow scripts
     echo "n" >> commands #don't install plugins -> may need to revise (dbNSFP?)
 
-    perl ./INSTALL.pl < commands #this has several prompts which need to worked out, which datasets do we want from it?
+    perl ./INSTALL.pl < commands
+    ln -s /usr/local/src/ensembl-vep-release-92.5/vep /usr/local/bin/vep
     cd /usr/local/src
 
     #bedtools
@@ -245,3 +251,6 @@ From:centos:centos7.4.1708
     mv ./bin/fasterq-dum* /usr/local/bin/
     mv ./bin/prefetc* /usr/local/bin/
     cd /usr/local/src
+
+%runscript
+    #if need to run stuff, put here
