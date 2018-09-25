@@ -97,12 +97,13 @@ From:centos:centos7.4.1708
     echo "10" >> commands #choose bos_taurus_merged_vep_92_UMD3.1.tar.gz
     echo "n" >> commands #overwrite cached files, is this needed -> no
     echo "n" >> commands #don't install FASTA files -> can use and specify in NextFlow scripts
-    echo "n" >> commands #don't install plugins -> may need to revise (dbNSFP?)
+    echo "n" >> commands #don't install plugins -> may need to revise
 
     mkdir /usr/local/src/ensembl-vep-release-92.5/cache
     perl ./INSTALL.pl --CACHEDIR /usr/local/src/ensembl-vep-release-92.5/cache < commands
     ln -s /usr/local/src/ensembl-vep-release-92.5/vep /usr/local/bin/vep
     cd /usr/local/src
+
 
     #samtools
     wget https://github.com/samtools/samtools/releases/download/1.8/samtools-1.8.tar.bz2
