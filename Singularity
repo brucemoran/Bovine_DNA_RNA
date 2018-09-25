@@ -57,7 +57,7 @@ From:centos:centos7.4.1708
     # ensembl vep
     # note built without mysql support, error message:
     # WARNING: DBD::mysql module not found. VEP can only run in offline (--offline) mode without DBD::mysql installed
-    #
+    ##used --offline by preference
     yum install -y perl-CPAN perl-IO-Socket-SSL perl-Archive-Any perl-YAML perl-CPAN-Meta perl-Digest-MD5 perl-App-cpanminus perl-local-lib
 
     ##setting more that LANG locale is an issue for several tools
@@ -67,6 +67,42 @@ From:centos:centos7.4.1708
     echo 'export LANG=en_US.UTF-8' >> $SINGULARITY_ENVIRONMENT
     echo 'export LANGUAGE=C' >> $SINGULARITY_ENVIRONMENT
     echo 'export LC_ALL=C' >> $SINGULARITY_ENVIRONMENT
+
+    #ensembl VEP
+    #The VEP installer needs Ensembl which needs bioperl, Ensembl didn't have a cpan or rpm package, installing like its 1990!
+    ##thank goodness it is such a wonderful tool=D
+    cd /usr/local/lib
+    wget ftp://ftp.ensembl.org/pub/ensembl-api.tar.gz
+    wget https://cpan.metacpan.org/authors/id/C/CJ/CJFIELDS/BioPerl-1.6.924.tar.gz
+    tar xf ensembl-api.tar.gz
+    tar xf BioPerl-1.6.924.tar.gz
+
+    echo 'export PERL5LIB=${PERL5LIB}:/usr/local/lib/ensembl/modules:/usr/local/lib/ensembl-io/modules:/usr/local/lib/ensembl-variation/modules:/usr/local/lib/ensembl-funcgen/modules' >>$SINGULARITY_ENVIRONMENT
+
+    #but the bioperl we just downloaded is missing the DB:HTS module, so use cpan to install it
+    #this prompts us to install a load of extra bits of bioperl, tell it not to
+    #yes n | cpan install Bio::DB::HTS
+    cpanm install --force Bio::DB::HTS #version mismatch in the tests requires forcing, actual program ok
+    cpanm DBI Set::IntervalTree PerlIO::gzip
+
+    #cpan Module::Build
+
+    cd /usr/local/src
+    wget https://github.com/Ensembl/ensembl-vep/archive/release/92.5.tar.gz
+    tar xf 92.5.tar.gz
+    cd ensembl-vep-release-92.5
+
+    echo "y" > commands
+    echo "y" >> commands #agree to install cache files
+    echo "10" >> commands #choose bos_taurus_merged_vep_92_UMD3.1.tar.gz
+    echo "y" >> commands #overwrite cached files, is this needed -> no
+    echo "n" >> commands #don't install FASTA files -> can use and specify in NextFlow scripts
+    echo "n" >> commands #don't install plugins -> may need to revise (dbNSFP?)
+
+    mkdir /usr/local/src/ensembl-vep-release-92.5/cache
+    perl ./INSTALL.pl --CACHEDIR /usr/local/src/ensembl-vep-release-92.5/cache < commands
+    ln -s /usr/local/src/ensembl-vep-release-92.5/vep /usr/local/bin/vep
+    cd /usr/local/src
 
     #samtools
     wget https://github.com/samtools/samtools/releases/download/1.8/samtools-1.8.tar.bz2
@@ -103,42 +139,6 @@ From:centos:centos7.4.1708
     mv cramtools-3.0.jar /usr/local/bin
     echo -e "#! /bin/bash\nexec java -jar /data/genome/reference/hg19/refGene/cramtools-3.0/cramtools-3.0.jar "$@"" > /usr/local/bin/cramtools
     chmod a+x /usr/local/bin/cramtools
-
-    #ensembl VEP
-    #The VEP installer needs Ensembl which needs bioperl, Ensembl didn't have a cpan or rpm package, installing like its 1990!
-    #thank goodness it is such a wonderful tool=D
-    cd /usr/local/lib
-    wget ftp://ftp.ensembl.org/pub/ensembl-api.tar.gz
-    wget https://cpan.metacpan.org/authors/id/C/CJ/CJFIELDS/BioPerl-1.6.924.tar.gz
-    tar xf ensembl-api.tar.gz
-    tar xf BioPerl-1.6.924.tar.gz
-
-    echo 'export PERL5LIB=${PERL5LIB}:/usr/local/lib/ensembl/modules:/usr/local/lib/ensembl-io/modules:/usr/local/lib/ensembl-variation/modules:/usr/local/lib/ensembl-funcgen/modules' >>$SINGULARITY_ENVIRONMENT
-
-    #but the bioperl we just downloaded is missing the DB:HTS module, so use cpan to install it
-    #this prompts us to install a load of extra bits of bioperl, tell it not to
-    #yes n | cpan install Bio::DB::HTS
-    cpanm install --force Bio::DB::HTS #version mismatch in the tests requires forcing, actual program ok
-    cpanm DBI Set::IntervalTree PerlIO::gzip
-
-    #cpan Module::Build
-
-    cd /usr/local/src
-
-    wget https://github.com/Ensembl/ensembl-vep/archive/release/92.5.tar.gz
-    tar xf 92.5.tar.gz
-    cd ensembl-vep-release-92.5
-
-    echo "y" > commands
-    echo "y" >> commands #agree to install cache files
-    echo "10" >> commands #choose bos_taurus_merged_vep_92_UMD3.1.tar.gz
-    echo "y" >> commands #overwrite cached files, is this needed -> yes, not there unless built
-    echo "n" >> commands #don't install FASTA files -> can use and specify in NextFlow scripts
-    echo "n" >> commands #don't install plugins -> may need to revise (dbNSFP?)
-
-    perl ./INSTALL.pl < commands
-    ln -s /usr/local/src/ensembl-vep-release-92.5/vep /usr/local/bin/vep
-    cd /usr/local/src
 
     #bedtools
     wget https://github.com/arq5x/bedtools2/releases/download/v2.27.1/bedtools-2.27.1.tar.gz

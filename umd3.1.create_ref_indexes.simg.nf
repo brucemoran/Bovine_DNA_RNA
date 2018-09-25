@@ -15,13 +15,12 @@ if (params.help) {
   log.info 'Usage: '
   log.info 'nextflow run umd3.1.create_ref_indexes.simg.nf \
             --refDir refs \
-            -with-singularity bovine_DNA_RNA.simg \
-            -c "bovine_DNA_RNA.nextflow.simg.config" \
+            -c "umd3.1.RNAseq_STAR.exome_BWA.GATK4-HC.simg.nextflow.config" \
             -with-report "ref.report.html" \
             -with-timeline "ref.timeline.html"'
   log.info ''
   log.info 'Mandatory arguments:'
-  log.info '--dataDir    STRING    where data is found, and written'
+  log.info '--refDir    STRING    where reference data will be store'
   exit 1
 }
 
