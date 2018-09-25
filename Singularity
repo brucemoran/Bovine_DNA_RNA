@@ -12,10 +12,11 @@ From:centos:centos7.4.1708
 
 %post
     #essential utilities
-    yum -y install git wget bzip2 unzip which
+    yum -y install git wget bzip2 unzip which emacs
 
     #language and libraries
-    yum -y install java-1.8.0-openjdk-devel gcc gcc-c++ glibc-devel make ncurses-devel zlib-devel libbzip2-devel bzip2-devel xz-devel perl-DBI lapack-devel atlas-devel freetype freetype-devel libpng-devel
+    yum -y install java-1.8.0-openjdk-devel gcc gcc-c++ glibc-devel make ncurses-devel zlib-devel libbzip2-devel bzip2-devel xz-devel perl-DBI lapack-devel atlas-devel freetype freetype-devel libpng-devel readline-devel pcre pcre-devel libcurl libcurl-devel
+
     #libclas and libatlas aren't put in the right places
     ln -s /usr/lib64/atlas/libtatlas.so /usr/lib64/libatlas.so
     ln -s /usr/lib64/atlas/libsatlas.so /usr/lib64/libcblas.so
@@ -29,6 +30,24 @@ From:centos:centos7.4.1708
     cd /usr/local/src
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
+    ##R
+
+    #required libs
+    yum -y install readline readline-devel pcre pcre-devel libcurl libcurl-devel
+
+    #source
+    wget https://cran.rstudio.com/src/base/R-3/R-3.5.1.tar.gz
+    tar xf R-3.5.1.tar.gz
+    cd R-3.5.1
+    ./configure --with-x=no --prefix=/usr/local/
+    make
+    make install
+    cd /usr/local/src
+
+    #packages
+    R --slave -e 'install.packages("BiocManager", repos="https://cloud.r-project.org/")'
+    R --slave -e 'lapply(c("ggplot2","tidyverse","plyr","dplyr","biomaRt","reshape2","roots","Biobase","rgexf","fgsea","gtools","Rplinkseq","Rserve"),function(f){library("BiocManager"); BiocManager::install(f,update=TRUE,ask=FALSE)})'
+
     #multiqc
     pip3.6 install multiqc
 
@@ -36,12 +55,16 @@ From:centos:centos7.4.1708
     # note built without mysql support, error message:
     # WARNING: DBD::mysql module not found. VEP can only run in offline (--offline) mode without DBD::mysql installed
     #
-    yum install -y perl-CPAN perl-IO-Socket-SSL perl-Archive-Any perl-YAML perl-CPAN-Meta perl-Digest-MD5 perl-App-cpanminus perl-local-lib emacs
+    yum install -y perl-CPAN perl-IO-Socket-SSL perl-Archive-Any perl-YAML perl-CPAN-Meta perl-Digest-MD5 perl-App-cpanminus perl-local-lib
 
     ##setting more that LANG locale is an issue for several tools
     ##https://github.com/CentOS/sig-cloud-instance-images/issues/71
     localedef -i en_US -f UTF-8 en_US.UTF-8
-    echo -e "LANGUAGE=\"en_US.UTF-8\"\nLC_ALL=\"en_US.UTF-8\"" >> /etc/locale.conf
+    echo -e "LANGUAGE="C"\nLC_ALL="C"" >> /etc/locale.conf
+    LANGUAGE="C"
+    LC_ALL="C"
+    export LANGUAGE
+    export LC_ALL
 
     #samtools
     wget https://github.com/samtools/samtools/releases/download/1.8/samtools-1.8.tar.bz2
@@ -106,9 +129,9 @@ From:centos:centos7.4.1708
     echo "y" > commands
     echo "y" >> commands #agree to install cache files
     echo "10" >> commands #choose bos_taurus_merged_vep_92_UMD3.1.tar.gz
-    echo "y" >> commands #overrite cached files, is this needed?
-    echo "n" >> commands #don't install FASTA files
-    echo "n" >> commands #don't install plugins
+    echo "y" >> commands #overwrite cached files, is this needed -> yes, not there unless built
+    echo "n" >> commands #don't install FASTA files -> can use and specify in NextFlow scripts
+    echo "n" >> commands #don't install plugins -> may need to revise (dbNSFP?)
 
     perl ./INSTALL.pl < commands #this has several prompts which need to worked out, which datasets do we want from it?
     cd /usr/local/src
@@ -124,7 +147,7 @@ From:centos:centos7.4.1708
     #picard
     wget https://github.com/broadinstitute/picard/releases/download/2.18.9/picard.jar -O /usr/local/lib/picard.jar
     chmod a+x /usr/local/lib/picard.jar
-    echo -e "#! /bin/bash\njavamem=\"\"\nif [[ \$1 =~ "-Xmx" ]];then javamem=\$1; shift 1; fi\nexec java \$javamem -jar /usr/local/lib/picard.jar \"\$@\"" > /usr/local/bin/picard-tools
+    echo -e "#! /bin/bash\njavamem=""\nif [[ \$1 =~ "-Xmx" ]];then javamem=\$1; shift 1; fi\nexec java \$javamem -jar /usr/local/lib/picard.jar "\$@"" > /usr/local/bin/picard-tools
     chmod a+x /usr/local/bin/picard-tools
 
     #BWA
@@ -186,7 +209,7 @@ From:centos:centos7.4.1708
     cd snpEff
     mv snpEff.jar /usr/local/lib
     chmod a+x /usr/local/lib/snpEff.jar
-    echo -e "#! /bin/bash\njavamem=\"\"\nif [[ \$1 =~ "-Xmx" ]];then javamem=\$1; shift 1; fi\nexec java \$javamem -jar /usr/local/lib/snpEff.jar \"\$@\"" > /usr/local/bin/snpEff
+    echo -e "#! /bin/bash\njavamem=""\nif [[ \$1 =~ "-Xmx" ]];then javamem=\$1; shift 1; fi\nexec java \$javamem -jar /usr/local/lib/snpEff.jar "\$@"" > /usr/local/bin/snpEff
     chmod a+x /usr/local/bin/snpEff
 
     #plink-ng
@@ -230,5 +253,6 @@ From:centos:centos7.4.1708
     export LANG="en_US.UTF-8"
     export LANGUAGE="en_US.UTF-8"
     export LC_ALL="en_US.UTF-8"
+    export GATK_LOCAL_JAR=/usr/local/lib/gatk-package-4.0.6.0-local.jar
 
     #running [no] stuff
