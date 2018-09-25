@@ -77,6 +77,7 @@ From:centos:centos7.4.1708
     tar xf ensembl-api.tar.gz
     tar xf BioPerl-1.6.924.tar.gz
 
+
     echo 'export PERL5LIB=${PERL5LIB}:/usr/local/lib/ensembl/modules:/usr/local/lib/ensembl-io/modules:/usr/local/lib/ensembl-variation/modules:/usr/local/lib/ensembl-funcgen/modules:/usr/local/lib/BioPerl-1.6.924' >>$SINGULARITY_ENVIRONMENT
 
     #but the bioperl we just downloaded is missing the DB:HTS module, so use cpan to install it
