@@ -245,7 +245,3 @@ From:centos:centos7.4.1708
     mv ./bin/fasterq-dum* /usr/local/bin/
     mv ./bin/prefetc* /usr/local/bin/
     cd /usr/local/src
-
-%runscript
-
-    #running [no] stuff
