@@ -31,7 +31,6 @@ From:centos:centos7.4.1708
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
     ##R
-
     #required libs
     yum -y install readline readline-devel pcre pcre-devel libcurl libcurl-devel
 
