@@ -28,7 +28,7 @@ From:centos:centos7.4.1708
 
     mkdir -p /usr/local/src
     cd /usr/local/src
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+    echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib' >> $SINGULARITY_ENVIRONMENT
 
     ##R
     #required libs
@@ -60,10 +60,9 @@ From:centos:centos7.4.1708
     ##https://github.com/CentOS/sig-cloud-instance-images/issues/71
     localedef -i en_US -f UTF-8 en_US.UTF-8
     echo -e "LANGUAGE="C"\nLC_ALL="C"" >> /etc/locale.conf
-    LANGUAGE="C"
-    LC_ALL="C"
-    export LANGUAGE
-    export LC_ALL
+    echo 'export LANG=en_US.UTF-8' >> $SINGULARITY_ENVIRONMENT
+    echo 'export LANGUAGE=C' >> $SINGULARITY_ENVIRONMENT
+    echo 'export LC_ALL=C' >> $SINGULARITY_ENVIRONMENT
 
     #samtools
     wget https://github.com/samtools/samtools/releases/download/1.8/samtools-1.8.tar.bz2
@@ -197,7 +196,7 @@ From:centos:centos7.4.1708
     unzip gatk-4.0.6.0.zip
     cd gatk-4.0.6.0
     mv gatk-package-4.0.6.0-local.jar /usr/local/lib
-    export GATK_LOCAL_JAR=/usr/local/lib/gatk-package-4.0.6.0-local.jar
+    echo 'export GATK_LOCAL_JAR=/usr/local/lib/gatk-package-4.0.6.0-local.jar' >> $SINGULARITY_ENVIRONMENT
     mv gatk /usr/local/bin
     mv gatk-completion.sh /usr/local/bin
     cd /usr/local/src
@@ -248,10 +247,5 @@ From:centos:centos7.4.1708
     cd /usr/local/src
 
 %runscript
-    #set locales
-    export LANG="en_US.UTF-8"
-    export LANGUAGE="C"
-    export LC_ALL="C"
-    export GATK_LOCAL_JAR=/usr/local/lib/gatk-package-4.0.6.0-local.jar
 
     #running [no] stuff
