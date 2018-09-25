@@ -82,8 +82,8 @@ From:centos:centos7.4.1708
     #but the bioperl we just downloaded is missing the DB:HTS module, so use cpan to install it
     #this prompts us to install a load of extra bits of bioperl, tell it not to
     #yes n | cpan install Bio::DB::HTS
-    cpanm install --force Bio::DB::HTS #version mismatch in the tests requires forcing, actual program ok
-    cpanm DBI Set::IntervalTree PerlIO::gzip
+    #cpanm install --force Bio::DB::HTS #version mismatch in the tests requires forcing, actual program ok
+    #cpanm DBI Set::IntervalTree PerlIO::gzip
 
     #cpan Module::Build
 
