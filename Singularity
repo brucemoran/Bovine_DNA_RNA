@@ -251,8 +251,8 @@ From:centos:centos7.4.1708
 %runscript
     #set locales
     export LANG="en_US.UTF-8"
-    export LANGUAGE="en_US.UTF-8"
-    export LC_ALL="en_US.UTF-8"
+    export LANGUAGE="C"
+    export LC_ALL="C"
     export GATK_LOCAL_JAR=/usr/local/lib/gatk-package-4.0.6.0-local.jar
 
     #running [no] stuff
