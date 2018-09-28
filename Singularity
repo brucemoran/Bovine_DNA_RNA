@@ -39,17 +39,17 @@ From:centos:centos7.4.1708
     yum -y install readline readline-devel pcre pcre-devel libcurl libcurl-devel
 
     #source
-    #wget https://cran.rstudio.com/src/base/R-3/R-3.5.1.tar.gz
-    #tar xf R-3.5.1.tar.gz
-    #cd R-3.5.1
-    #./configure --with-x=no --prefix=/usr/local/
-    #make
-    #make install
+    wget https://cran.rstudio.com/src/base/R-3/R-3.5.1.tar.gz
+    tar xf R-3.5.1.tar.gz
+    cd R-3.5.1
+    ./configure --with-x=no --prefix=/usr/local/
+    make
+    make install
     cd /usr/local/src
 
     #packages
-    #R --slave -e 'install.packages("BiocManager", repos="https://cloud.r-project.org/")'
-    #R --slave -e 'lapply(c("ggplot2","tidyverse","plyr","dplyr","biomaRt","reshape2","roots","Biobase","rgexf","fgsea","gtools","Rplinkseq","Rserve"),function(f){library("BiocManager"); BiocManager::install(f,update=TRUE,ask=FALSE)})'
+    R --slave -e 'install.packages("BiocManager", repos="https://cloud.r-project.org/")'
+    R --slave -e 'lapply(c("ggplot2","tidyverse","plyr","dplyr","biomaRt","reshape2","roots","Biobase","rgexf","fgsea","gtools","Rplinkseq","Rserve"),function(f){library("BiocManager"); BiocManager::install(f,update=TRUE,ask=FALSE)})'
 
     #multiqc
     pip3.6 install multiqc
