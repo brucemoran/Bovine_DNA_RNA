@@ -59,6 +59,7 @@ From:centos:centos7.4.1708
     yum install -y perl-CPAN perl-IO-Socket-SSL perl-Archive-Any perl-YAML perl-CPAN-Meta perl-Digest-MD5 perl-App-cpanminus perl-local-lib openssl-devel
     cpanm --force --local-lib "/usr/local" ExtUtils::MakeMaker Module::Build
 
+
     ##setting more that LANG locale is an issue for several tools
     ##https://github.com/CentOS/sig-cloud-instance-images/issues/71
     localedef -i en_US -f UTF-8 en_US.UTF-8
