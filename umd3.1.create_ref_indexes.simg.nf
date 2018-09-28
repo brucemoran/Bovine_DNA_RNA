@@ -68,12 +68,16 @@ process downloadVcf {
 
   publishDir "$params.refDir", mode: "copy", pattern: "*.vcf.gz"
 
+  output:
+  file('*.vcf.gz') into complete0_1
+
   script:
   """
   wget -O ./bos_taurus_incl_consequences.vcf.gz \
     ftp://ftp.ensembl.org/pub/release-92/variation/vcf/bos_taurus/bos_taurus_incl_consequences.vcf.gz
   """
 }
+complete0_1.subscribe { println "Completed BWA indexing" }
 
 /* 1.0: Channels from files to unpigz
 * sorts fasta on chrnames, then reorders
