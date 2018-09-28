@@ -124,6 +124,7 @@ From:centos:centos7.4.1708
     make
     make install
     cd /usr/local/src
+    
 
     #cramtools
     wget https://github.com/enasequence/cramtools/archive/v3.0.tar.gz
