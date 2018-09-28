@@ -77,7 +77,7 @@ process downloadVcf {
     ftp://ftp.ensembl.org/pub/release-92/variation/vcf/bos_taurus/bos_taurus_incl_consequences.vcf.gz
   """
 }
-complete0_1.subscribe { println "Completed BWA indexing" }
+complete0_1.subscribe { println "Completed VCF download" }
 
 /* 1.0: Channels from files to unpigz
 * sorts fasta on chrnames, then reorders
