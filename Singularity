@@ -73,6 +73,7 @@ From:centos:centos7.4.1708
     git clone -b release/92 https://github.com/Ensembl/ensembl-vep.git
     ensembl-vep/travisci/get_dependencies.sh
 
+
     PERL5LIB=$PERL5LIB:/usr/local/lib/perl5:/usr/local/src/bioperl-live-release-1-6-924
     export KENT_SRC=/usr/local/src/kent-335_base/src
     export HTSLIB_DIR=/usr/local/src/htslib
