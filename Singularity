@@ -54,11 +54,10 @@ From:centos:centos7.4.1708
     #multiqc
     pip3.6 install multiqc
 
-    # ensembl vep
-    # note built without mysql support, error message:
-    # WARNING: DBD::mysql module not found. VEP can only run in offline (--offline) mode without DBD::mysql installed
-    ##used --offline by preference
+    #Ensembl VEP
+    ##required installs
     yum install -y perl-CPAN perl-IO-Socket-SSL perl-Archive-Any perl-YAML perl-CPAN-Meta perl-Digest-MD5 perl-App-cpanminus perl-local-lib
+    cpanm ExtUtils::MakeMaker
 
     ##setting more that LANG locale is an issue for several tools
     ##https://github.com/CentOS/sig-cloud-instance-images/issues/71
@@ -68,35 +67,35 @@ From:centos:centos7.4.1708
     echo 'export LANGUAGE=C' >> $SINGULARITY_ENVIRONMENT
     echo 'export LC_ALL=C' >> $SINGULARITY_ENVIRONMENT
 
-    #ensembl VEP
-    #The VEP installer needs Ensembl which needs bioperl, Ensembl didn't have a cpan or rpm package, installing like its 1990!
-    ##thank goodness it is such a wonderful tool=D
-    cd /usr/local/lib
-    wget ftp://ftp.ensembl.org/pub/ensembl-api.tar.gz
-    wget https://cpan.metacpan.org/authors/id/C/CJ/CJFIELDS/BioPerl-1.6.924.tar.gz
-    tar xf ensembl-api.tar.gz
-    tar xf BioPerl-1.6.924.tar.gz
+    ##from willensembl Docker
+    git clone -b release/92 https://github.com/Ensembl/ensembl.git
+    git clone -b release/92 https://github.com/Ensembl/ensembl-vep.git
+    ensembl-vep/travisci/get_dependencies.sh
 
-
-    echo 'export PERL5LIB=${PERL5LIB}:/usr/local/lib/ensembl/modules:/usr/local/lib/ensembl-io/modules:/usr/local/lib/ensembl-variation/modules:/usr/local/lib/ensembl-funcgen/modules:/usr/local/lib/BioPerl-1.6.924' >>$SINGULARITY_ENVIRONMENT
-
-    #but the bioperl we just downloaded is missing the DB:HTS module, so use cpan to install it
-    #this prompts us to install a load of extra bits of bioperl, tell it not to
-    #yes n | cpan install Bio::DB::HTS
-    #cpanm install --force Bio::DB::HTS #version mismatch in the tests requires forcing, actual program ok
-    #cpanm DBI Set::IntervalTree PerlIO::gzip
-
-    #cpan Module::Build
+    export PERL5LIB=$PERL5LIB:/usr/local/src/bioperl-live-release-1-6-924
+    export KENT_SRC=/usr/local/src/kent-335_base/src
+    export HTSLIB_DIR=/usr/local/src/htslib
+    export MACHTYPE=x86_64
+    export CFLAGS="-fPIC"
+    export DEPS=/usr/local/src
+    ensembl-vep/travisci/build_c.sh
+    cd $HTSLIB_DIR
+    make install
 
     cd /usr/local/src
-    wget https://github.com/Ensembl/ensembl-vep/archive/release/92.5.tar.gz
-    tar xf 92.5.tar.gz
-    cd ensembl-vep-release-92.5
-
-    mkdir /usr/local/src/ensembl-vep-release-92.5/cache
-    perl ./INSTALL.pl --AUTO ac --CACHEDIR "/usr/local/src/ensembl-vep-release-92.5/cache" --SPECIES "bos_taurus_merged" --NO_UPDATE
-    ln -s /usr/local/src/ensembl-vep-release-92.5/vep /usr/local/bin/vep
-    cd /usr/local/src
+    git clone https://github.com/bioperl/bioperl-ext.git
+    cd bioperl-ext
+    git reset --hard 1b59725
+    cd Bio/Ext/Align/
+    perl -pi -e"s|(cd libs.+)CFLAGS=\\\'|\$1CFLAGS=\\\'-fPIC |" Makefile.PL
+    perl Makefile.PL
+    make
+    make install
+    cd /usr/local/src/ensembl-vep
+    chmod u+x *.pl
+    export PERL5LIB=$PERL5LIB:/usr/local/src/bioperl-live-release-1-6-924:/usr/local/src/ensembl-vep
+    echo 'export PERL5LIB' >> $SINGULARITY_ENVIRONMENT
+    perl ./INSTALL.pl --AUTO ac --CACHEDIR "/usr/local/src/ensembl-vep/cache" --SPECIES "bos_taurus_merged" --NO_UPDATE
 
     #samtools
     wget https://github.com/samtools/samtools/releases/download/1.8/samtools-1.8.tar.bz2
