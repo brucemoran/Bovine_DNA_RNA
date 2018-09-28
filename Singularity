@@ -39,17 +39,17 @@ From:centos:centos7.4.1708
     yum -y install readline readline-devel pcre pcre-devel libcurl libcurl-devel
 
     #source
-    wget https://cran.rstudio.com/src/base/R-3/R-3.5.1.tar.gz
-    tar xf R-3.5.1.tar.gz
-    cd R-3.5.1
-    ./configure --with-x=no --prefix=/usr/local/
-    make
-    make install
+    #wget https://cran.rstudio.com/src/base/R-3/R-3.5.1.tar.gz
+    #tar xf R-3.5.1.tar.gz
+    #cd R-3.5.1
+    #./configure --with-x=no --prefix=/usr/local/
+    #make
+    #make install
     cd /usr/local/src
 
     #packages
-    R --slave -e 'install.packages("BiocManager", repos="https://cloud.r-project.org/")'
-    R --slave -e 'lapply(c("ggplot2","tidyverse","plyr","dplyr","biomaRt","reshape2","roots","Biobase","rgexf","fgsea","gtools","Rplinkseq","Rserve"),function(f){library("BiocManager"); BiocManager::install(f,update=TRUE,ask=FALSE)})'
+    #R --slave -e 'install.packages("BiocManager", repos="https://cloud.r-project.org/")'
+    #R --slave -e 'lapply(c("ggplot2","tidyverse","plyr","dplyr","biomaRt","reshape2","roots","Biobase","rgexf","fgsea","gtools","Rplinkseq","Rserve"),function(f){library("BiocManager"); BiocManager::install(f,update=TRUE,ask=FALSE)})'
 
     #multiqc
     pip3.6 install multiqc
@@ -57,7 +57,7 @@ From:centos:centos7.4.1708
     #Ensembl VEP
     ##required installs
     yum install -y perl-CPAN perl-IO-Socket-SSL perl-Archive-Any perl-YAML perl-CPAN-Meta perl-Digest-MD5 perl-App-cpanminus perl-local-lib
-    cpanm ExtUtils::MakeMaker
+    cpanm --force --local-lib "/usr/local" ExtUtils::MakeMaker Module::Build
 
     ##setting more that LANG locale is an issue for several tools
     ##https://github.com/CentOS/sig-cloud-instance-images/issues/71
@@ -67,12 +67,13 @@ From:centos:centos7.4.1708
     echo 'export LANGUAGE=C' >> $SINGULARITY_ENVIRONMENT
     echo 'export LC_ALL=C' >> $SINGULARITY_ENVIRONMENT
 
-    ##from willensembl Docker
+    ##https://github.com/CHRUdeLille/vep_containers/blob/master/92/Singularity.92
+    cd /usr/local/src
     git clone -b release/92 https://github.com/Ensembl/ensembl.git
     git clone -b release/92 https://github.com/Ensembl/ensembl-vep.git
     ensembl-vep/travisci/get_dependencies.sh
 
-    export PERL5LIB=$PERL5LIB:/usr/local/src/bioperl-live-release-1-6-924
+    export PERL5LIB=$PERL5LIB:/usr/local/lib/perl5:/usr/local/src/bioperl-live-release-1-6-924
     export KENT_SRC=/usr/local/src/kent-335_base/src
     export HTSLIB_DIR=/usr/local/src/htslib
     export MACHTYPE=x86_64
@@ -93,7 +94,7 @@ From:centos:centos7.4.1708
     make install
     cd /usr/local/src/ensembl-vep
     chmod u+x *.pl
-    export PERL5LIB=$PERL5LIB:/usr/local/src/bioperl-live-release-1-6-924:/usr/local/src/ensembl-vep
+    PERL5LIB=$PERL5LIB:/usr/local/src/bioperl-live-release-1-6-924:/usr/local/src/ensembl-vep
     echo 'export PERL5LIB' >> $SINGULARITY_ENVIRONMENT
     perl ./INSTALL.pl --AUTO ac --CACHEDIR "/usr/local/src/ensembl-vep/cache" --SPECIES "bos_taurus_merged" --NO_UPDATE
 
