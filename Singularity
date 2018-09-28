@@ -16,7 +16,7 @@ From:centos:centos7.4.1708
     yum -y install git wget bzip2 unzip which emacs
 
     #language and libraries
-    yum -y install java-1.8.0-openjdk-devel gcc gcc-c++ glibc-devel make ncurses-devel zlib-devel libbzip2-devel bzip2-devel xz-devel perl-DBI lapack-devel atlas-devel freetype freetype-devel libpng-devel readline-devel pcre pcre-devel libcurl libcurl-devel
+    yum -y install java-1.8.0-openjdk-devel gcc gcc-c++ glibc-devel make ncurses-devel zlib-devel libbzip2-devel bzip2-devel xz-devel perl-DBI lapack-devel atlas-devel freetype freetype-devel libpng-devel readline-devel pcre pcre-devel
 
     #libclas and libatlas aren't put in the right places
     ln -s /usr/lib64/atlas/libtatlas.so /usr/lib64/libatlas.so
@@ -56,7 +56,7 @@ From:centos:centos7.4.1708
 
     #Ensembl VEP
     ##required installs
-    yum install -y perl-CPAN perl-IO-Socket-SSL perl-Archive-Any perl-YAML perl-CPAN-Meta perl-Digest-MD5 perl-App-cpanminus perl-local-lib
+    yum install -y perl-CPAN perl-IO-Socket-SSL perl-Archive-Any perl-YAML perl-CPAN-Meta perl-Digest-MD5 perl-App-cpanminus perl-local-lib openssl-devel
     cpanm --force --local-lib "/usr/local" ExtUtils::MakeMaker Module::Build
 
     ##setting more that LANG locale is an issue for several tools
@@ -73,7 +73,7 @@ From:centos:centos7.4.1708
     git clone -b release/92 https://github.com/Ensembl/ensembl-vep.git
     ensembl-vep/travisci/get_dependencies.sh
 
-    export PERL5LIB=$PERL5LIB:/usr/local/lib/perl5:/usr/local/src/bioperl-live-release-1-6-924
+    PERL5LIB=$PERL5LIB:/usr/local/lib/perl5:/usr/local/src/bioperl-live-release-1-6-924
     export KENT_SRC=/usr/local/src/kent-335_base/src
     export HTSLIB_DIR=/usr/local/src/htslib
     export MACHTYPE=x86_64
@@ -124,7 +124,6 @@ From:centos:centos7.4.1708
     make
     make install
     cd /usr/local/src
-    
 
     #cramtools
     wget https://github.com/enasequence/cramtools/archive/v3.0.tar.gz
