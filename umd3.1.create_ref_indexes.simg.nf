@@ -66,7 +66,7 @@ process downloadBed {
 
 process downloadVcf {
 
-  publishDir "$params.refDir", mode: "copy", pattern: "*"
+  publishDir "$params.refDir", mode: "copy", pattern: "*vcf.corr*"
 
   output:
   file('*') into complete0_1
@@ -75,7 +75,11 @@ process downloadVcf {
   """
   wget -O ./bos_taurus_incl_consequences.vcf.gz \
     ftp://ftp.ensembl.org/pub/release-92/variation/vcf/bos_taurus/bos_taurus_incl_consequences.vcf.gz
-  tabix bos_taurus_incl_consequences.vcf.gz
+  ##need to remove empty ALT
+  gunzip -c bos_taurus_incl_consequences.vcf.gz | \
+  gawk 'BEGIN{FS="\t"; OFS="\t"}{if (NF>1 && \$5=="") {\$5="."; print \$0} else print \$0}' | \
+  bgzip > bos_taurus_incl_consequences.vcf.corr.gz
+  tabix bos_taurus_incl_consequences.vcf.corr.gz
   """
 }
 complete0_1.subscribe { println "Completed VCF download, tabix indexing" }
