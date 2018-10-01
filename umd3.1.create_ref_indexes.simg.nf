@@ -66,10 +66,11 @@ process downloadBed {
 
 process downloadVcf {
 
-  publishDir "$params.refDir", mode: "copy", pattern: "*vcf.corr*"
+  publishDir "$params.refDir", mode: "copy", pattern: "*corr.sd.v*"
 
   output:
   file('*') into complete0_1
+  file(dict) from vcf_dict
 
   script:
   """
@@ -77,9 +78,15 @@ process downloadVcf {
     ftp://ftp.ensembl.org/pub/release-92/variation/vcf/bos_taurus/bos_taurus_incl_consequences.vcf.gz
   ##need to remove empty ALT
   gunzip -c bos_taurus_incl_consequences.vcf.gz | \
-  gawk 'BEGIN{FS="\t"; OFS="\t"}{if (NF>1 && \$5=="") {\$5="."; print \$0} else print \$0}' | \
-  bgzip > bos_taurus_incl_consequences.vcf.corr.gz
-  tabix bos_taurus_incl_consequences.vcf.corr.gz
+  gawk 'BEGIN{FS="\t"; OFS="\t"}{if (NF>1 && \$5=="") {\$5="."; print \$0} else print \$0}' > bos_taurus_incl_consequences.corr.vcf
+
+  picard-tools UpdateVcfSequenceDictionary \
+    I=bos_taurus_incl_consequences.corr.vcf \
+    O=bos_taurus_incl_consequences.corr.sd.vcf \
+    SD=$dict
+
+  bgzip bos_taurus_incl_consequences.corr.sd.vcf
+  tabix bos_taurus_incl_consequences.corr.sd.vcf.gz
   """
 }
 complete0_1.subscribe { println "Completed VCF download, tabix indexing" }
@@ -100,7 +107,7 @@ process sortfa {
   set file('*.sort.fa'), file('*.sort.fa.fai') into (bwa_fasta, star_fasta)
   file('*.gtf') into (star_gtf, refflat_gtf, rrna_gtf)
   file('*.bed') into exome_bed
-  file('*.dict') into (fasta_dict, rrna_dict)
+  file('*.dict') into (fasta_dict, rrna_dict, vcf_dict)
 
   script:
   """
