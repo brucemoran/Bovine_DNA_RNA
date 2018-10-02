@@ -66,7 +66,7 @@ From:centos:centos7.4.1708
     echo -e "LANGUAGE="C"\nLC_ALL="C"" >> /etc/locale.conf
     echo 'export LANG=en_US.UTF-8' >> $SINGULARITY_ENVIRONMENT
     echo 'export LANGUAGE=C' >> $SINGULARITY_ENVIRONMENT
-    echo 'export LC_ALL=C' >> $SINGULARITY_ENVIRONMENT
+    echo 'export LC_ALL=en_US.utf8' >> $SINGULARITY_ENVIRONMENT
 
     ##https://github.com/CHRUdeLille/vep_containers/blob/master/92/Singularity.92
     cd /usr/local/src
