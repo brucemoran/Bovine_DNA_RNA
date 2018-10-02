@@ -63,7 +63,7 @@ From:centos:centos7.4.1708
     ##setting more that LANG locale is an issue for several tools
     ##https://github.com/CentOS/sig-cloud-instance-images/issues/71
     localedef -i en_US -f UTF-8 en_US.UTF-8
-    echo -e "LANGUAGE="C"\nLC_ALL="C"" >> /etc/locale.conf
+    echo -e "LANGUAGE="C"\nLC_ALL="en_US.utf8"" >> /etc/locale.conf
     echo 'export LANG=en_US.UTF-8' >> $SINGULARITY_ENVIRONMENT
     echo 'export LANGUAGE=C' >> $SINGULARITY_ENVIRONMENT
     echo 'export LC_ALL=en_US.utf8' >> $SINGULARITY_ENVIRONMENT
