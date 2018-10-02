@@ -68,7 +68,6 @@ From:centos:centos7.4.1708
     echo 'export LANGUAGE=C' >> $SINGULARITY_ENVIRONMENT
     echo 'export LC_ALL=en_US.utf8' >> $SINGULARITY_ENVIRONMENT
 
-    
     ##https://github.com/CHRUdeLille/vep_containers/blob/master/92/Singularity.92
     cd /usr/local/src
     git clone -b release/92 https://github.com/Ensembl/ensembl.git
